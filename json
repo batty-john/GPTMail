@@ -1,0 +1,19 @@
+{
+	"name": "John",
+	"age": 30,
+	"cars": {
+		"make": "Honda",
+		"model": "Civic",
+		"year": 1994
+	},
+	{
+		"make": "Honda",
+		"model": "Civic",
+		"year": 1994
+	},
+	{
+		"make": "Honda",
+		"model": "Civic",
+		"year": 1994
+	}
+}
