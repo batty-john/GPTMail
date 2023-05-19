@@ -136,6 +136,9 @@ form {
     padding-right: 1em;
 }
 
+.email-border {
+    border-bottom: 2px solid ;
+}
 .circle-account-name {
         border-radius: 50%;
         background-color: red;

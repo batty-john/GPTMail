@@ -21,14 +21,6 @@ app.use(session({
   cookie: { secure: false } // if you are using https use { secure: true }
 }))
 
-app.use(session({
-    secret: 'my secret', // replace with your own secret
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }
-  }));
-
-
 // Database connection
 const db = mysql.createPool({
     host: 'outlawslosttreasure.com',
