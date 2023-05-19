@@ -1,15 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Email Client</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> GPT MAIL</title>
+    <meta name="description" content="GPT Mail">
+    <link href="styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Combo&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="favicon.ico">
+    <script src="home.js"></script>
 </head>
+
 <body>
-    <h1>Emails</h1>
-    <% for(let i=0; i < mail.length; i++) { %>
-        <div>
-            <h2>Email <%= i + 1 %></h2>
-            <p><%= mail[i] %></p>
+    
+    <div  id="wrapper">
+        <nav>
+            <header>
+                <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
+            </header>
+            <ul>
+                <li><a class="current" #inbox>Inbox</a></li>
+                <li><a class="#sent" #sent>Sent</a></li>
+                <li><a class="#favorite" #favorite>Favorite</a></li>
+            </ul>
+        </nav>
+    <div id="inbox">
+        <form>
+            <input type="text" placeholder="Search">
+            <!-- <i class="fa-thin fa-magnifying-glass"></i> -->
+        </form>
+        <div class="inbox-open-email">
+            <div class="sender-line">
+                <p><strong>Sender Name</strong></p>
+                <p class="inbox-open-email-time">10:31</p>
+            </div>
+            <p>Subject Line</p>
+            <p>Teaser Line</p>
+    
+
         </div>
-    <% } %>
+        <ul>
+            <li><h4> This is the first example email</h4></li>
+            <li><h4> Shipment confirmation from Amazon</h4></li>
+            <li><h4> How many days left of school??</h4></li>
+        </ul>
+        
+    </div>
+        <main>
+            <p>
+            The text inside of the emails will show up here
+        </p>
+        </main>
+    <div id="accounts">
+        <div class="circle-account-name" id="addAccountButton">+</div>
+    </div>
+
+    <div id="addAccountModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Add an Account</p>
+          <form id="addAccountForm">
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
+            <label for="server">IMAP/POP3 Server:</label><br>
+            <input type="text" id="server" name="server" required><br>
+            <label for="port">Port:</label><br>
+            <input type="number" id="port" name="port" required><br>
+            <label for="protocol">Protocol:</label><br>
+            <select id="protocol" name="protocol" required>
+              <option value="IMAP">IMAP</option>
+              <option value="POP3">POP3</option>
+            </select><br>
+            <input type="submit" value="Add">
+          </form>
+        </div>
+      </div>
+    
+</div>
 </body>
-</html>
