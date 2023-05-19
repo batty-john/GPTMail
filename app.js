@@ -9,9 +9,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
 app.set('views', path.join(__dirname, 'public'));
+
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-
-
 
 // Use the session middleware
 app.use(session({
@@ -82,6 +82,56 @@ app.post('/login', async (req, res) => {
       res.send('An error occurred');
     }
   });
+
+  app.post('/addAccount', async (req, res) => {
+    const { email, password, server, port, protocol } = req.body;
+
+    // Check if user is logged in
+    if (!req.session.userId) {
+        return res.status(401).send('Please log in to add an account');
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);  // hash the password
+
+        let query;
+        let params;
+
+        // If protocol is IMAP, set imap_server, imap_port, and imap_tls.
+        // If protocol is POP, set pop_server, pop_port, and pop_tls.
+        if (protocol === "IMAP") {
+            query = 'INSERT INTO user_accounts (user_id, email, password, imap_server, imap_port, imap_tls) VALUES (?, ?, ?, ?, ?, ?)';
+            params = [req.session.userId, email, hashedPassword, server, port, 1]; // 1 for true
+        } else if (protocol === "POP3") {
+            query = 'INSERT INTO user_accounts (user_id, email, password, pop_server, pop_port, pop_tls) VALUES (?, ?, ?, ?, ?, ?)';
+            params = [req.session.userId, email, hashedPassword, server, port, 1]; // 1 for true
+        } else {
+            return res.status(400).send('Invalid protocol');
+        }
+
+        const [result] = await db.query(query, params);
+        
+        // You may want to respond with a success message or with the added account
+        // In this example, we will just send a success message
+        res.status(200).json({ status: 'success', message: 'Account added successfully' });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ status: 'error', message: 'Error adding account, please try again' });
+    }
+});
+
+app.get('/accounts', (req, res) => {
+  const userId = req.session.userId; // Get the current user's ID from session data
+  db.query('SELECT * FROM user_accounts WHERE user_id = ?', [userId], (err, results) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ status: 'error', message: 'Error fetching accounts' });
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
+
   
   // add a route for your index page
   app.get('/', (req, res) => {
