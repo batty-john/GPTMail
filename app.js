@@ -1,66 +1,105 @@
 const express = require('express');
-const http = require('http');
-const imaps = require('imap-simple');
+const mysql = require('mysql2/promise');
+const bcrypt = require('bcrypt');
 const path = require('path');
-const mailparser = require('mailparser').simpleParser;
+const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const app = express();
-const server = http.createServer(app);
-
 app.set('view engine', 'ejs');
+app.use(express.static('public'))
 app.set('views', path.join(__dirname, 'public'));
+app.use(bodyParser.urlencoded({ extended: false }))
 
-let newMail = [];
 
-const config = {
-    imap: {
-        user: "morgan.thacker@ducimus.digital",
-        password: "0$v(mZD+T#_^",
-        host: "atlas.ducimus.digital",
-        port: 993,
-        tls: true,
-        authTimeout: 3000
+
+// Use the session middleware
+app.use(session({
+  secret: 'Frog Eye Salad AND Third Eye Sam',  // you should use a unique string for the secret
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // if you are using https use { secure: true }
+}))
+
+app.use(session({
+    secret: 'my secret', // replace with your own secret
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+  }));
+
+
+// Database connection
+const db = mysql.createPool({
+    host: 'outlawslosttreasure.com',
+    user: 'ducimus_gptmailer',
+    password: 'nP5UEjY=%$W1',
+    database: 'ducimus_gptmail',
+});
+
+db.getConnection()
+    .then(() => {
+        console.log('Connected to database');
+    })
+    .catch(err => {
+        console.error('Failed to connect to database:', err);
+        process.exit(1);  // Exit the process with a failure code
+    });
+
+app.get('/signup', (req, res) => {
+  res.render('signup');
+});
+
+app.post('/signup', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);  // hash the password
+
+    const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
+    const [result] = await db.query(query, [username, hashedPassword]);
+    res.redirect('/login');
+  } catch (err) {
+    console.log(err);
+    res.send('Error signing up, please try again');
+  }
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+  
+    const query = 'SELECT * FROM users WHERE username = ?';
+    try {
+      const [results] = await db.query(query, [username]);
+      if (results.length > 0) {
+        const match = await bcrypt.compare(password, results[0].password);
+        if (match) {
+          req.session.userId = results[0].id;
+          res.redirect('/');
+        } else {
+          res.send('Username or password incorrect');
+        }
+      } else {
+        res.send('Username or password incorrect');
+      }
+    } catch(err) {
+      console.log(err);
+      res.send('An error occurred');
     }
-};
-
-imaps.connect(config).then(function(connection) {
-  return connection.openBox('INBOX').then(function() {
-      var searchCriteria = ['ALL'];
-      var fetchOptions = {
-          bodies: ['HEADER', 'TEXT'],
-          struct: true,
-          markSeen: false
-      };
-      return connection.search(searchCriteria, fetchOptions);
-  }).then(function(messages) {
-      const promises = messages.map(function(message) {
-          if (message.attributes.struct) { // check if struct is defined
-              const allParts = imaps.getParts(message.attributes.struct);
-              const part = allParts.find(part => part.which === "TEXT");
-              return connection.getPartData(message, part)
-                  .then(function(partData) {
-                      return mailparser(partData);
-                  });
-          } else {
-              // If struct is not defined, we return a resolved Promise
-              // with some placeholder object
-              return Promise.resolve({subject: "No Subject", text: "No Text"});
-          }
-      });
-
-      return Promise.all(promises);
-  }).then(function(emails) {
-      emails.forEach(function(email) {
-          console.log(email);
-          newMail.push(email);
-      });
   });
-});
-
-app.get('/', (req, res) => {
-    res.render('index.ejs', {mail: newMail});
-});
-
-server.listen(3000, () => console.log('Server listening on port 3000'));
-
- 
+  
+  // add a route for your index page
+  app.get('/', (req, res) => {
+    if (req.session.userId) {
+      res.render('index');
+    } else {
+      res.redirect('/login');
+    }
+  });
+  
+  app.listen(3000, () => {
+    console.log('Server started on port 3000');
+  });
