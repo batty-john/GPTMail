@@ -83,14 +83,24 @@ flex-grow: 2;
 background-color: aqua;
 text-align: center;
 padding-top: 2em;
+overflow-x: scroll;
+overflow-y: scroll;
+}
+
+main.closed {
+    display: none;
 }
 
 #inbox{
 flex-basis: 250px;
 flex-grow: 1;
 background-color: pink;
-
 }
+
+#inbox.open {
+    max-width: 300px;
+    }
+
 #inbox ul {
     display: flex;
     flex-direction: column;
@@ -137,6 +147,8 @@ form {
     text-align: right;
     align-self: right;
     padding-right: 1em;
+    margin-top: 0;
+    max-width: 100px;
 }
 
 .subject-line {
@@ -214,4 +226,17 @@ form {
     color: black;
     text-decoration: none;
     cursor: pointer;
+  }
+
+  .sender-line, .subject-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .inbox-open-email {
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }

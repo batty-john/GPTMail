@@ -99,16 +99,15 @@ const form = document.getElementById('addAccountForm');
       }
 
       // New function to fetch recent mails and update the inbox
-function updateInbox() {
-    fetch('/getRecentMail')
-      .then(response => response.json())
-      .then(emails => {
-        let inboxEmailsDiv = document.getElementById('inbox-emails');
-        inboxEmailsDiv.innerHTML = ""; // Clear the inbox
-        for (let email of emails) {
-            // Assuming each 'email' object has 'from', 'subject', 'date', and 'teaser' properties
-            let emailHTML = `
-                <div>
+      function updateInbox() {
+        fetch('/getRecentMail')
+          .then(response => response.json())
+          .then(emails => {
+            let inboxEmailsDiv = document.getElementById('inbox-emails');
+            inboxEmailsDiv.innerHTML = ""; // Clear the inbox
+            for (let email of emails) {
+              let emailHTML = `
+                <div onclick="displayEmail(${JSON.stringify(email).split('"').join("&quot;")})">
                     <div class="sender-line">
                         <h3><strong>${email.from}</strong></h3>
                         <p class="inbox-open-email-time">${email.date}</p>
@@ -117,14 +116,37 @@ function updateInbox() {
                     <div class="teaser-line"><p>${email.teaser}</p></div>
                     <div class="email-border"></div>
                 </div>
-            `;
-            inboxEmailsDiv.innerHTML +=(emailHTML);
+              `;
+              inboxEmailsDiv.innerHTML += emailHTML;
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+      }
+
+      function displayEmail(email) {
+        let mainDiv = document.querySelector('main');
+        let inboxDiv = document.getElementById('inbox');
+        
+        // Add 'open' class to the main and inbox divs
+        mainDiv.classList.add('open');
+        mainDiv.classList.remove('closed')
+        inboxDiv.classList.add('open');
+        inboxDiv.classList.remove('closed');
+      
+        // Use HTML if it exists, otherwise use text
+        if (email.html && email.html.trim() !== "") {
+          mainDiv.innerHTML = email.html;
+        } else {
+          // For text, replace newlines with <br> for proper formatting
+          mainDiv.innerHTML = `<p>${email.text.split('\n').join('<br>')}</p>`;
         }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-}
+      }
+      
+      
+      
+      
 
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();

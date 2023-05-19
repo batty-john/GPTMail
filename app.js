@@ -47,12 +47,9 @@ app.get('/signup', (req, res) => {
 
 app.get('/getRecentMail', async (req, res) => {
   const userId = req.session.userId;
-  console.log("User ID:", userId);
   
   const [accounts] = await db.query('SELECT * FROM user_accounts WHERE user_id = ?', [userId]);
-  console.log("Accounts:", accounts);
 
-  // for simplicity, just use the first account
   const account = accounts[0];
 
   const config = {
@@ -65,64 +62,74 @@ app.get('/getRecentMail', async (req, res) => {
       authTimeout: 3000
     }
   };
-  console.log("Config:", config);
 
   imaps.connect(config).then(function (connection) {
     return connection.openBox('INBOX').then(function () {
       var now = new Date();
-      now.setDate(now.getDate() - 7);
+      now.setDate(now.getDate() - 1);
       var searchCriteria = [['SINCE', now]];
       var fetchOptions = { bodies: ['HEADER', 'TEXT'], struct: true };
       
-      return connection.search(searchCriteria, fetchOptions).then(async function (results) {
-        var emails = await Promise.all(results.map(async function (result) {
-          var rawEmail = result.parts.filter(function (part) {
-            return part.which === 'TEXT';
-          })[0].body;
-          console.log(rawEmail.slice(0, 100)); // Print first 100 characters of each raw email.
-
+      return connection.search(searchCriteria, fetchOptions).then(function (results) {
+        let emailPromises = results.map(function (result) {
           return new Promise((resolve, reject) => {
-            let mailparser = new MailParser();
-            let email = {};
-          
-            mailparser.on('headers', function(header) {
-              email.subject = header.get('subject');
-              email.date = header.get('date') ? header.get('date').toDate() : null; // Make sure the date is a JavaScript date
-              if(header.get('from')) {
-                  email.from = header.get('from').text;
-              } else {
-                  email.from = "unknown";
-              }
-            });
-          
-            mailparser.on('data', function(data) {
-              if (data.type === 'text' && data.text) {
-                email.teaser = data.text.slice(0, 100); // Take first 100 characters as teaser
-              }
-            });
+            var header = result.parts.filter(function (part) {
+              return part.which === 'HEADER';
+            })[0].body;
+      
+            var rawEmail = result.parts.filter(function (part) {
+              return part.which === 'TEXT';
+            })[0].body;
             
+            let email = {
+              from: header.from[0],
+              date: header.date[0],
+              subject: header.subject[0],
+              teaser: '',
+              text: '',
+              html: ''
+            };
+
+      
+            let mailparser = new MailParser();
           
+mailparser.on('data', function(data) {
+  if (data.type === 'text') {
+
+    let text = data.text;
+    text = text.replace(/--_=_swift.*_=_/, ''); // remove MIME boundary
+    text = text.replace(/Content-Type:.*charset=utf-8/, ''); // remove Content-Type header
+
+    email.text = text; // Store the full text
+    if (!email.teaser) {
+      // If we didn't already find a teaser, take the first 100 characters of this part as the teaser
+      email.teaser = text.slice(0, 100);
+    }
+  }
+
+  if (data.type === 'html') {
+    email.html = data.html; // Store the full html
+  }
+});
             mailparser.on('end', function() {
-              // Finalize output and resolve the promise with the email object
+              // If there's no 'data' event (e.g. the email is empty), resolve the promise anyway
               resolve(email);
             });
-          
-            try {
-              mailparser.write(rawEmail);
-              mailparser.end();
-            } catch (err) {
-              reject('Failed to parse email:', err);
-            }
+            mailparser.write(rawEmail.toString('utf8'));
+            mailparser.end();
           });
-          
-          
-        }));
-
-        res.json(emails);
+        });
+      
+        Promise.all(emailPromises)
+          .then(emails => {
+            console.log(emails);
+            res.json(emails);
+          });
       });
     });
   });
 });
+
 
 
 
