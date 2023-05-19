@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Client</title>
+</head>
+<body>
+    <h1>Emails</h1>
+    <% for(let i=0; i < mail.length; i++) { %>
+        <div>
+            <h2>Email <%= i + 1 %></h2>
+            <p><%= mail[i] %></p>
+        </div>
+    <% } %>
+</body>
+</html>
