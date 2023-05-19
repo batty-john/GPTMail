@@ -1,0 +1,137 @@
+* { box-sizing: border-box;
+}
+
+body {
+    background-color: #494948;
+    color: #080808;
+    font-family: Tahoma, Arial, Sans-serif;
+    margin: 0;
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: row;
+    background-color: #fcfafa;
+    padding: 0;
+    height: 100vh;
+}
+
+header {
+    background-color: #0a0a0a;
+    height: 40px;
+}
+
+#mainLogo {
+	height: 37px;
+	padding-top: .25em;
+	padding-left: 1em;
+}
+
+h4{
+    font-family: Tahoma, Arial, Sans-serif;
+}
+
+p {
+    padding-left: 1em;
+}
+/* Navigation */
+
+nav {
+    text-align: center;
+    font-size: 1em;
+    flex-basis: 150px;
+    flex-grow: 1;
+}
+
+nav a { 
+    text-decoration: none;
+}
+
+nav a:link {
+    color: #FEF6C2;
+}
+
+nav a:hover {
+    background-color: #6e6e6e;
+}
+
+nav ul {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.25em;   
+}
+
+nav li {
+    padding: .5em 1em;
+    width: 100%;
+}
+
+nav li a {
+    display: flex;
+    flex-direction: column;
+    padding: .5em 1em;
+}
+
+main{
+flex-basis: 600px;
+flex-grow: 2;
+background-color: aqua;
+text-align: center;
+padding-top: 2em;
+}
+
+#inbox{
+flex-basis: 250px;
+flex-grow: 1;
+background-color: pink;
+
+}
+#inbox ul {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1em;   
+}
+
+#inbox li {
+    padding: .5em 1em;
+    width: 100%;
+}
+
+#inbox li a {
+    display: flex;
+    flex-direction: column;
+    padding: .5em 1em;
+}
+
+#accounts{
+flex-basis: 50px;
+flex-grow: 0;
+
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 1em;
+    width: 100%;
+}
+
+.sender-line {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.inbox-open-email-time {
+    text-align: right;
+    align-self: right;
+    padding-right: 1em;
+}
