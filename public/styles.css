@@ -130,6 +130,7 @@ form {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
+    height: 25px;
 }
 
 .inbox-open-email-time {
@@ -142,7 +143,15 @@ form {
     display: flex;
     /* justify-content: space-between; */
     flex-direction: row;
-    padding-left: 1em; 
+    padding-left: 1em;
+
+}
+
+.subject-line p {
+    margin: 0;
+}
+.sender-line h3 {
+    margin:0;
 }
 .teaser-line {
     display: flex;

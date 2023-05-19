@@ -68,22 +68,66 @@ const form = document.getElementById('addAccountForm');
     });
 
     function updateAccounts() {
+        console.log("inFunction");
         fetch('/accounts')
           .then(response => response.json())
           .then(accounts => {
-            const accountsDiv = document.getElementById('accounts');
+            console.log("response recieved");
+            const accountsDiv = document.getElementById('allAccounts');
             // Clear the accounts list
-            accountsDiv.innerHTML = '<div class="circle-account-name" id="addAccountButton">+</div>';
+            accountsDiv.innerHTML = '';
             // Add each account to the list
+            let accountsCount = 0;
             for (const account of accounts) {
+                accountsCount++;
               const div = document.createElement('div');
               div.className = 'circle-account-name';
               div.textContent = account.email.charAt(0).toUpperCase();
               accountsDiv.appendChild(div);
             }
+
+             // Call the function to get recent mails and display them
+            if(accountsCount > 0) {
+                updateInbox();
+            }
+             
+
           })
           .catch(error => {
             console.error('Error:', error);
           });
       }
+
+      // New function to fetch recent mails and update the inbox
+function updateInbox() {
+    fetch('/getRecentMail')
+      .then(response => response.json())
+      .then(emails => {
+        let inboxEmailsDiv = document.getElementById('inbox-emails');
+        inboxEmailsDiv.innerHTML = ""; // Clear the inbox
+        for (let email of emails) {
+            // Assuming each 'email' object has 'from', 'subject', 'date', and 'teaser' properties
+            let emailHTML = `
+                <div>
+                    <div class="sender-line">
+                        <h3><strong>${email.from}</strong></h3>
+                        <p class="inbox-open-email-time">${email.date}</p>
+                    </div>
+                    <div class="subject-line"><p>${email.subject}</p></div>
+                    <div class="teaser-line"><p>${email.teaser}</p></div>
+                    <div class="email-border"></div>
+                </div>
+            `;
+            inboxEmailsDiv.innerHTML +=(emailHTML);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+}
+
+      document.addEventListener('DOMContentLoaded', (event) => {
+        updateAccounts();
+      });
+      
       

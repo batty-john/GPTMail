@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const imaps = require('imap-simple');
+const MailParser = require('mailparser').MailParser;
+
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -41,6 +44,88 @@ db.getConnection()
 app.get('/signup', (req, res) => {
   res.render('signup');
 });
+
+app.get('/getRecentMail', async (req, res) => {
+  const userId = req.session.userId;
+  console.log("User ID:", userId);
+  
+  const [accounts] = await db.query('SELECT * FROM user_accounts WHERE user_id = ?', [userId]);
+  console.log("Accounts:", accounts);
+
+  // for simplicity, just use the first account
+  const account = accounts[0];
+
+  const config = {
+    imap: {
+      user: account.email,
+      password: account.password, // make sure to decrypt password
+      host: account.imap_server,
+      port: account.imap_port,
+      tls: true,
+      authTimeout: 3000
+    }
+  };
+  console.log("Config:", config);
+
+  imaps.connect(config).then(function (connection) {
+    return connection.openBox('INBOX').then(function () {
+      var now = new Date();
+      now.setDate(now.getDate() - 7);
+      var searchCriteria = [['SINCE', now]];
+      var fetchOptions = { bodies: ['HEADER', 'TEXT'], struct: true };
+      
+      return connection.search(searchCriteria, fetchOptions).then(async function (results) {
+        var emails = await Promise.all(results.map(async function (result) {
+          var rawEmail = result.parts.filter(function (part) {
+            return part.which === 'TEXT';
+          })[0].body;
+          console.log(rawEmail.slice(0, 100)); // Print first 100 characters of each raw email.
+
+          return new Promise((resolve, reject) => {
+            let mailparser = new MailParser();
+            let email = {};
+          
+            mailparser.on('headers', function(header) {
+              email.subject = header.get('subject');
+              email.date = header.get('date') ? header.get('date').toDate() : null; // Make sure the date is a JavaScript date
+              if(header.get('from')) {
+                  email.from = header.get('from').text;
+              } else {
+                  email.from = "unknown";
+              }
+            });
+          
+            mailparser.on('data', function(data) {
+              if (data.type === 'text' && data.text) {
+                email.teaser = data.text.slice(0, 100); // Take first 100 characters as teaser
+              }
+            });
+            
+          
+            mailparser.on('end', function() {
+              // Finalize output and resolve the promise with the email object
+              resolve(email);
+            });
+          
+            try {
+              mailparser.write(rawEmail);
+              mailparser.end();
+            } catch (err) {
+              reject('Failed to parse email:', err);
+            }
+          });
+          
+          
+        }));
+
+        res.json(emails);
+      });
+    });
+  });
+});
+
+
+
 
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
@@ -92,7 +177,7 @@ app.post('/login', async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);  // hash the password
+        const hashedPassword =password;  // TODO: hash the password -- Must be reversable
 
         let query;
         let params;
@@ -120,17 +205,25 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/accounts', (req, res) => {
-  const userId = req.session.userId; // Get the current user's ID from session data
-  db.query('SELECT * FROM user_accounts WHERE user_id = ?', [userId], (err, results) => {
-    if (err) {
-      console.log(err);
-      res.status(500).json({ status: 'error', message: 'Error fetching accounts' });
-    } else {
-      res.status(200).json(results);
-    }
-  });
+app.get('/accounts', async (req, res) => {
+  console.log('GET request received at /accounts'); // Log to ensure the route is being hit
+
+  const userId = req.session.userId; // Get userId from session
+  console.log('User ID: ', userId); 
+
+  const query = "SELECT * FROM user_accounts WHERE user_id = ?";  
+
+  try {
+    const [results] = await db.query(query, [userId]);
+    console.log('Database query results: ', results); // Log results for debugging
+    res.json(results);
+  } catch (err) {
+    console.error('Database query error: ', err); // Log error message
+    res.status(500).send('Server error');
+  }
 });
+
+
 
   
   // add a route for your index page
