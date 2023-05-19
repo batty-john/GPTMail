@@ -27,13 +27,15 @@ header {
 	padding-left: 1em;
 }
 
+h3 {
+    padding-left: 1em;
+}
+
 h4{
     font-family: Tahoma, Arial, Sans-serif;
 }
 
-p {
-    padding-left: 1em;
-}
+
 /* Navigation */
 
 nav {
@@ -136,6 +138,18 @@ form {
     padding-right: 1em;
 }
 
+.subject-line {
+    display: flex;
+    /* justify-content: space-between; */
+    flex-direction: row;
+    padding-left: 1em; 
+}
+.teaser-line {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    padding-left: 1em;  
+}
 .email-border {
     border-bottom: 2px solid ;
 }
