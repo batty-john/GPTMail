@@ -4,8 +4,10 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const imaps = require('imap-simple');
+const Imap = require('imap')
 const MailParser = require('mailparser').MailParser;
+const inspect = require('util').inspect;
+var  fs = require('fs')
 
 
 const app = express();
@@ -45,89 +47,160 @@ app.get('/signup', (req, res) => {
   res.render('signup');
 });
 
-app.get('/getRecentMail', async (req, res) => {
+app.get('/getRecentMail/:start/:end', async (req, res) => {
   const userId = req.session.userId;
-  
+  let start = req.params.start;
+  let end = req.params.end;
+
   const [accounts] = await db.query('SELECT * FROM user_accounts WHERE user_id = ?', [userId]);
 
   const account = accounts[0];
 
-  const config = {
-    imap: {
-      user: account.email,
-      password: account.password, // make sure to decrypt password
-      host: account.imap_server,
-      port: account.imap_port,
-      tls: true,
-      authTimeout: 3000
-    }
-  };
+  // TODO: decrypt password
+  const decryptedPassword = account.password; 
 
-  imaps.connect(config).then(function (connection) {
-    return connection.openBox('INBOX').then(function () {
-      var now = new Date();
-      now.setDate(now.getDate() - 1);
-      var searchCriteria = [['SINCE', now]];
-      var fetchOptions = { bodies: ['HEADER', 'TEXT'], struct: true };
-      
-      return connection.search(searchCriteria, fetchOptions).then(function (results) {
-        let emailPromises = results.map(function (result) {
-          return new Promise((resolve, reject) => {
-            var header = result.parts.filter(function (part) {
-              return part.which === 'HEADER';
-            })[0].body;
-      
-            var rawEmail = result.parts.filter(function (part) {
-              return part.which === 'TEXT';
-            })[0].body;
-            
-            let email = {
-              from: header.from[0],
-              date: header.date[0],
-              subject: header.subject[0],
-              teaser: '',
-              text: '',
-              html: ''
-            };
+  var imap = new Imap({
+    user: account.email,
+    password: decryptedPassword,
+    host: account.imap_server,
+    port: account.imap_port,
+    tls: true
+  });
 
-      
-            let mailparser = new MailParser();
-          
-mailparser.on('data', function(data) {
-  if (data.type === 'text') {
-
-    let text = data.text;
-    text = text.replace(/--_=_swift.*_=_/, ''); // remove MIME boundary
-    text = text.replace(/Content-Type:.*charset=utf-8/, ''); // remove Content-Type header
-
-    email.text = text; // Store the full text
-    if (!email.teaser) {
-      // If we didn't already find a teaser, take the first 100 characters of this part as the teaser
-      email.teaser = text.slice(0, 100);
-    }
+  function openInbox(cb) {
+    imap.openBox('INBOX', true, cb);
   }
 
-  if (data.type === 'html') {
-    email.html = data.html; // Store the full html
-  }
-});
-            mailparser.on('end', function() {
-              // If there's no 'data' event (e.g. the email is empty), resolve the promise anyway
-              resolve(email);
-            });
-            mailparser.write(rawEmail.toString('utf8'));
-            mailparser.end();
-          });
+  imap.once('ready', function() {
+    openInbox(function(err, box) {
+      if (err) throw err;
+
+      imap.search(['ALL'], function(err, results) {
+        if (err) throw err;
+
+        let total = results.length; // total number of messages
+        let actualStart = start === '*' ? Math.max(1, total - end + 1) : start;
+        let actualEnd = start === '*' ? total : end;
+
+        let f = imap.fetch(`${actualStart}:${actualEnd}`, {
+          bodies: '',
+          struct: true
         });
       
-        Promise.all(emailPromises)
-          .then(emails => {
-            console.log(emails);
-            res.json(emails);
+        let mails = [];
+
+        let processing = 0; // Keep track of how many emails are currently being processed
+
+        f.on('message', function(msg, seqno) {
+          processing++; // Increment the counter when starting to process a new email
+          console.log('Message no. ' + seqno);
+
+          var parser = new MailParser();
+          let mailData = {};
+
+          parser.on('headers', function(headers) {
+            const subject = headers.get('subject');
+            const sender = headers.get('from').text;
+            const recipients = headers.get('to').text;
+            const dateHeader = headers.get('date');
+        
+            const date = dateHeader ? new Date(dateHeader) : new Date();
+        
+            if (isNaN(date.getTime())) {
+              console.error('Invalid date in email:', dateHeader);
+              return;
+            }
+        
+            mailData = {
+              seqno: seqno,
+              from: sender,
+              date: date.toISOString(),
+              subject: subject,
+              recipients: recipients,
+              time: date.getTime(),
+            };
           });
+        
+          parser.on('data', function(data) {
+            if (data.type === 'text') {
+              const body = data.text;
+              const textPreview = body.substring(0,100);
+              
+              mailData.body = body;
+              mailData.teaser = textPreview;
+            }
+              
+            if (data.type === 'html') {
+              mailData.html = data.html;
+            }
+          
+            // Check for attachments
+            if (data.type === 'attachment') {
+              data.content.on('end', function() {
+                // Release the attachment data when its stream ends
+                data.release();
+              });
+
+              // Create a directory named after the account's email if it doesn't exist
+              let accountDirectory = './attachments/' + account.email.replace(/[@.]/g, '_'); // replace . and @ symbols with underscore
+
+              fs.mkdir(accountDirectory, { recursive: true }, (err) => {
+                if (err) throw err;
+              });
+
+              // Save the attachment in the account-specific directory
+              data.content.pipe(fs.createWriteStream(accountDirectory + '/' + data.filename));
+              console.log('Got attachment: ', data.filename);
+            }
+          });
+      
+        parser.on('end', function() {
+            console.log(`Parser end event for message ${seqno}`);
+            mails.push(mailData);
+            processing--; // Decrement the counter when finished processing an email
+          });
+
+          parser.on('error', function(err) {
+            console.log("MailParser error:", err);
+          });
+          
+          msg.on('body', function(stream, info) {
+            stream.pipe(parser);
+          });
+        
+          msg.once('end', function() {
+            console.log(`Message end event for message ${seqno}`);
+          });
+        });
+        
+        f.once('error', function(err) {
+          console.log('Fetch error: ' + err);
+        });
+        
+        f.once('end', function() {
+          const checkProcessingDone = setInterval(function() {
+            if (processing === 0) { // Check if all emails have finished processing
+              clearInterval(checkProcessingDone);
+              console.log('Done fetching all messages!');
+              console.log(mails);
+              imap.end();
+              res.json(mails);
+            }
+          }, 100);
+        });
       });
     });
   });
+
+  imap.once('error', function(err) {
+    console.log(err);
+  });
+
+  imap.once('end', function() {
+    console.log('Connection ended');
+  });
+
+  imap.connect();
 });
 
 
