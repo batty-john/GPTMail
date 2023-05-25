@@ -47,6 +47,12 @@ app.get('/signup', (req, res) => {
   res.render('signup');
 });
 
+app.get('deleteEmail/:UID', async (req, res) => {
+
+  
+
+});
+
 app.get('/getRecentMail/:start/:end', async (req, res) => {
   const userId = req.session.userId;
   let start = req.params.start;
