@@ -121,6 +121,30 @@ background-color: pink;
     padding: .5em 1em;
 }
 
+#inbox-emails {
+    position: relative;
+}
+
+.popup-menu {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    
+}
+.email-container:hover {
+    background-color:#fefefe
+}
+.email-container .popup-menu {
+    visibility: hidden;
+}
+
+.email-container:hover .popup-menu {
+    visibility:visible;
+}
+.fa-trash {
+    align-items: right;
+ } 
+
 #accounts{
 flex-basis: 60px;
 flex-grow: 0;
