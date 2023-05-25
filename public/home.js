@@ -24,6 +24,8 @@ window.onclick = function(event) {
   }
 }
 
+
+
 const form = document.getElementById('addAccountForm');
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -98,13 +100,26 @@ const form = document.getElementById('addAccountForm');
           });
       }
 
+
+let lastUIDFetched = 0; // UID of the oldest email fetched
+let firstUIDFetched = Infinity; // UID of the most recent email fetched
+const pageSize = 10; // Number of emails to fetch at once
+
+
       // New function to fetch recent mails and update the inbox
       function updateInbox() {
-        fetch('/getRecentMail')
+        let url = '/getRecentMail';
+        if (firstUIDFetched !== Infinity) {
+        url += `/${lastUIDFetched + 1}/${firstUIDFetched + pageSize}`
+        } else {
+        url += `/*/${pageSize}`
+        }
+
+        fetch(url)
           .then(response => response.json())
           .then(emails => {
             let inboxEmailsDiv = document.getElementById('inbox-emails');
-            inboxEmailsDiv.innerHTML = ""; // Clear the inbox
+            // Don't clear the inbox - we will be adding to it
             for (let email of emails) {
               let emailHTML = `
                 <div onclick="displayEmail(${JSON.stringify(email).split('"').join("&quot;")})">
@@ -119,11 +134,16 @@ const form = document.getElementById('addAccountForm');
               `;
               inboxEmailsDiv.innerHTML += emailHTML;
             }
+            if (emails.length > 0) {
+              lastUIDFetched = Math.min(lastUIDFetched, emails[emails.length - 1].uid);
+              firstUIDFetched = Math.max(firstUIDFetched, emails[0].uid);
+            }
           })
           .catch(error => {
             console.error('Error:', error);
           });
       }
+      
 
       function displayEmail(email) {
         let mainDiv = document.querySelector('main');
@@ -140,7 +160,7 @@ const form = document.getElementById('addAccountForm');
           mainDiv.innerHTML = email.html;
         } else {
           // For text, replace newlines with <br> for proper formatting
-          mainDiv.innerHTML = `<p>${email.text.split('\n').join('<br>')}</p>`;
+          mainDiv.innerHTML = `<p>${email.body.split('\n').join('<br>')}</p>`;
         }
       }
       
@@ -150,6 +170,6 @@ const form = document.getElementById('addAccountForm');
 
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
-      });
+      })
       
       
