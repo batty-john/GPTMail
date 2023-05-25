@@ -170,6 +170,7 @@ const pageSize = 10; // Number of emails to fetch at once
 
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
+        
       })
       
       

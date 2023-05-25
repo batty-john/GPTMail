@@ -39,10 +39,10 @@ h4{
 /* Navigation */
 
 nav {
-    text-align: center;
+    text-align: left;
     font-size: 1em;
     flex-basis: 150px;
-    flex-grow: 1;
+    /* flex-grow: 1; */
 }
 
 nav a { 
@@ -80,7 +80,7 @@ nav li a {
 main{
 flex-basis: 600px;
 flex-grow: 2;
-background-color: aqua;
+background-color: rgb(88, 175, 175);
 text-align: center;
 padding-top: 2em;
 overflow-x: scroll;
@@ -91,6 +91,16 @@ main.closed {
     display: none;
 }
 
+main.closed:hover .close-email-view {
+
+}
+
+.close-email-view {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    
+}
 #inbox{
 flex-basis: 250px;
 flex-grow: 1;
@@ -122,17 +132,23 @@ background-color: pink;
 }
 
 #inbox-emails {
-    position: relative;
+    
 }
 
 .popup-menu {
     position: absolute;
     top: 15px;
     right: 15px;
+    visibility: hidden;
     
 }
+
+.email-container {
+    position: relative;
+}
+
 .email-container:hover {
-    background-color:#fefefe
+    background-color:#ebd1d1
 }
 .email-container .popup-menu {
     visibility: hidden;
@@ -141,9 +157,7 @@ background-color: pink;
 .email-container:hover .popup-menu {
     visibility:visible;
 }
-.fa-trash {
-    align-items: right;
- } 
+
 
 #accounts{
 flex-basis: 60px;
