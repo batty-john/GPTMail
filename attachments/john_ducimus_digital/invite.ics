@@ -1,0 +1,34 @@
+BEGIN:VCALENDAR
+PRODID:-//Google Inc//Google Calendar 70.9054//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+DTSTART:20220211T000000Z
+DTEND:20220211T010000Z
+DTSTAMP:20220203T193504Z
+ORGANIZER;CN=garrickreevs@gmail.com:mailto:garrickreevs@gmail.com
+UID:9berbo3fio94ca5qvvf4j5j7t4@google.com
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
+ TRUE;CN=john@ducimus.digital;X-NUM-GUESTS=0:mailto:john@ducimus.digital
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;RSVP=TRUE
+ ;CN=garrickreevs@gmail.com;X-NUM-GUESTS=0:mailto:garrickreevs@gmail.com
+X-GOOGLE-CONFERENCE:https://meet.google.com/bmy-dqdc-jhg
+X-MICROSOFT-CDO-OWNERAPPTID:-605744599
+CREATED:20220125T211707Z
+DESCRIPTION:-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~
+ :~:~:~:~:~:~:~:~::~:~::-\nDo not edit this section of the description.\n\nT
+ his event has a video call.\nJoin: https://meet.google.com/bmy-dqdc-jhg\n\n
+ View your event at https://calendar.google.com/calendar/event?action=VIEW&e
+ id=OWJlcmJvM2Zpbzk0Y2E1cXZ2ZjRqNWo3dDQgam9obkBkdWNpbXVzLmRpZ2l0YWw&tok=MjIj
+ Z2Fycmlja3JlZXZzQGdtYWlsLmNvbTAwYTBiMjkyMmM0NjBiMTFhOTQwMjc3MGMxOTE4ZjZhOTQ
+ yMmJjYzI&ctz=America%2FDenver&hl=en&es=1.\n-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:~::-
+LAST-MODIFIED:20220203T193502Z
+LOCATION:
+SEQUENCE:1
+STATUS:CONFIRMED
+SUMMARY:Webinar with Ducimus
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

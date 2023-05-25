@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+PRODID:-//34.214.199.2//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:717909038@scheduling
+DTSTAMP:20211130T160215Z
+DESCRIPTION:Client time zone: America/Denver\nName: Crystal Allen\nPhone: (
+ 609) 968-0654\nEmail: crystal@exploregalore.org\n\nLocation\n============
+ \nClick to join meeting: https://app.squarespacescheduling.com/schedule.ph
+ p?owner=23565828&action=zoom&uniqueID=942bc84264b1a6ee90ca599fb578fe53&own
+ erID=23565828\n\nChange Appointment: https://bell-nectarine-76xz.squarespa
+ ce.com/config/scheduling/appointments/view/717909038\n
+DTSTART:20211208T231500Z
+DTEND:20211208T234500Z
+LOCATION:Click to join meeting: https://app.squarespacescheduling.com/sched
+ ule.php?owner=23565828&action=zoom&uniqueID=942bc84264b1a6ee90ca599fb578fe
+ 53&ownerID=23565828
+SUMMARY:Crystal Allen: 1-on-1 Coaching: Marketing Strategy (John Batty)
+END:VEVENT
+END:VCALENDAR

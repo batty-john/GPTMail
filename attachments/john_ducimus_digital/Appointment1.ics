@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+PRODID:-//54.189.73.143//NONSGML iCalcreator 2.6//
+VERSION:2.0
+BEGIN:VEVENT
+UID:750014825@scheduling
+DTSTAMP:20220117T021745Z
+DESCRIPTION:Client time zone: America/Denver\nName: Dave Merkley\nPhone: (4
+ 35) 219-5916\nEmail: dmerkley@internexus.edu\n\nLocation\n============\nCl
+ ick to join meeting: https://app.squarespacescheduling.com/schedule.php?ow
+ ner=23565828&action=zoom&uniqueID=96c916d053b098e9c2c4c1726583946f&ownerID
+ =23565828\n\nChange Appointment: https://bell-nectarine-76xz.squarespace.c
+ om/config/scheduling/appointments/view/750014825\n
+DTSTART:20220125T173000Z
+DTEND:20220125T180000Z
+LOCATION:Click to join meeting: https://app.squarespacescheduling.com/sched
+ ule.php?owner=23565828&action=zoom&uniqueID=96c916d053b098e9c2c4c172658394
+ 6f&ownerID=23565828
+SUMMARY:Dave Merkley: 1-on-1 Coaching: Marketing Strategy (John Batty)
+END:VEVENT
+END:VCALENDAR
