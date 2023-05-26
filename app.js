@@ -8,6 +8,7 @@ const Imap = require('imap')
 const MailParser = require('mailparser').MailParser;
 const inspect = require('util').inspect;
 var  fs = require('fs')
+const axios = require('axios');
 
 
 const app = express();
@@ -47,10 +48,66 @@ app.get('/signup', (req, res) => {
   res.render('signup');
 });
 
-app.get('deleteEmail/:UID', async (req, res) => {
+app.post('/deleteMail/:accountId', async (req, res) => {
+  const accountId = req.params.accountId;
+  const uids = req.body.uids;
 
-  
+  // Check if the user is logged in and the accountId belongs to them
+  const userId = req.session.userId;
+  if (!userId) {
+    return res.status(401).send('Not logged in');
+  }
 
+  const [account] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+  if (account.user_id !== userId) {
+    return res.status(403).send('Not authorized to access this account');
+  }
+
+  // TODO: decrypt password
+  const decryptedPassword = account.password; 
+
+  const imap = new Imap({
+    user: account.email,
+    password: decryptedPassword,
+    host: account.imap_server,
+    port: account.imap_port,
+    tls: true
+  });
+
+  function openInbox(cb) {
+    imap.openBox('INBOX', true, cb);
+  }
+
+  imap.once('ready', function() {
+    openInbox(function(err, box) {
+      if (err) throw err;
+
+      // Iterate over each UID and move the corresponding email to the trash
+      uids.forEach((uid) => {
+        imap.move(uid, 'Trash', function(err) {
+          if (err) {
+            console.log(`Error moving email with UID ${uid} to trash:`, err);
+            res.send(`Error moving email with UID ${uid} to trash`);
+          } else {
+            console.log(`Successfully moved email with UID ${uid} to trash`);
+          }
+        });
+      });
+
+      // Send a response when all emails have been processed
+      res.send('Successfully moved emails to trash');
+    });
+  });
+
+  imap.once('error', function(err) {
+    console.log(err);
+  });
+
+  imap.once('end', function() {
+    console.log('Connection ended');
+  });
+
+  imap.connect();
 });
 
 app.get('/getRecentMail/:start/:end', async (req, res) => {
@@ -209,7 +266,112 @@ app.get('/getRecentMail/:start/:end', async (req, res) => {
   imap.connect();
 });
 
+async function getAllMailHeaders(accountId, userId, db) {
 
+  console.log("accountID: " + accountId);
+  console.log("userID: " + userId);
+  const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+
+  const account = accounts[0];
+
+  console.log("queried account id: " + account.user_id);
+  // Ensure that the requested account belongs to the logged-in user
+  if (account.user_id !== userId) {
+    throw new Error('Unauthorized');
+  }
+
+  // TODO: decrypt password
+  const decryptedPassword = account.password; 
+
+  var imap = new Imap({
+    user: account.email,
+    password: decryptedPassword,
+    host: account.imap_server,
+    port: account.imap_port,
+    tls: true
+  });
+
+  function openInbox(cb) {
+    imap.openBox('INBOX', true, cb);
+  }
+
+  imap.once('ready', function() {
+    openInbox(function(err, box) {
+      if (err) throw err;
+
+      imap.search(['ALL'], function(err, results) {
+        if (err) throw err;
+
+        let f = imap.fetch(results, {
+          bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)'],
+          struct: true
+        });
+
+        f.on('message', async function(msg, seqno) {
+          var parser = new MailParser();
+
+          msg.on('body', function(stream) {
+            stream.pipe(parser);
+          });
+
+          parser.on('headers', async function(headers) {
+            const subject = headers.get('subject');
+            const sender = headers.get('from').text;
+
+            let recipients = '';
+            if (headers.get('to')) {
+              recipients = headers.get('to').text;
+            }
+
+            const dateHeader = headers.get('date');
+
+            const date = dateHeader ? new Date(dateHeader) : new Date();
+            let mysqlFormattedDate = date.toISOString().slice(0, 19).replace('T', ' ');
+
+
+            if (isNaN(date.getTime())) {
+              console.error('Invalid date in email:', dateHeader);
+              return;
+            }
+
+            let mailData = {
+              account_Id: accountId,
+              uid: seqno,
+              sender: sender,
+              date: mysqlFormattedDate,
+              subject: subject,
+              recipients: recipients,
+            };
+
+            // Insert the header data into the database
+            const sql = 'INSERT INTO emails SET ?';
+            await db.query(sql, mailData);
+          });
+        });
+
+        f.once('error', function(err) {
+          console.log('Fetch error: ' + err);
+        });
+
+        f.once('end', function() {
+          console.log('Done fetching all messages!');
+          imap.end();
+          res.json({ success: true, message: 'All email headers fetched and stored.' });
+        });
+      });
+    });
+  });
+
+  imap.once('error', function(err) {
+    console.log(err);
+  });
+
+  imap.once('end', function() {
+    console.log('Connection ended');
+  });
+
+  imap.connect();
+}
 
 
 
@@ -282,13 +444,24 @@ app.post('/login', async (req, res) => {
 
         const [result] = await db.query(query, params);
         
-        // You may want to respond with a success message or with the added account
-        // In this example, we will just send a success message
-        res.status(200).json({ status: 'success', message: 'Account added successfully' });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ status: 'error', message: 'Error adding account, please try again' });
-    }
+         
+        // Assuming you have inserted the account in the account table and got the insertId
+        let accountId = result.insertId;
+      
+        try {
+          await getAllMailHeaders(accountId, req.session.userId, db);
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({ status: 'error', message: 'Error fetching email headers, please try again' });
+          return;
+        }
+      
+      res.status(200).json({ status: 'success', message: 'Account added successfully' });
+      
+  } catch (err) {
+      console.log(err);
+      res.status(500).json({ status: 'error', message: 'Error adding account, please try again' });
+  }
 });
 
 app.get('/accounts', async (req, res) => {
@@ -308,6 +481,122 @@ app.get('/accounts', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+app.get('/getUserMail/:accountId', async (req, res) => {
+  const accountId = req.params.accountId;
+
+  // Check if the user is logged in and the accountId belongs to them
+  const userId = req.session.userId;
+  if (!userId) {
+    return res.status(401).send('Not logged in');
+  }
+
+  const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+  const account = accounts[0]
+  if (account.user_id !== userId) {
+    return res.status(403).send('Not authorized to access this account');
+  }
+
+  // Fetch the emails
+  let [emails] = await db.query('SELECT * FROM emails WHERE account_id = ?', [accountId]);
+
+  // If there are no emails for this account, fetch them
+  if (emails.length === 0) {
+    try {
+      await getAllMailHeaders(accountId, userId, db);
+      // Fetch the emails again after getting them
+      [emails] = await db.query('SELECT * FROM emails WHERE account_id = ?', [accountId]);
+    } catch (error) {
+      console.error('Failed to fetch mail headers:', error);
+      return res.status(500).send('Failed to fetch mail headers');
+    }
+  }
+
+  // Send the emails to the client
+  res.json(emails);
+});
+
+app.get('/sync/:accountId', async (req, res) => {
+  let accountId = req.params.accountId;
+  
+  // Get the most recent UID from the database for the given account
+  let mostRecentUID = await getMostRecentUID(accountId);
+  
+  // Connect to the IMAP server and fetch the headers of the new emails
+  let imap = new Imap({
+    user: accounts[accountId].email,
+    password: accounts[accountId].password,
+    host: accounts[accountId].imapHost,
+    port: 993,
+    tls: true
+  });
+
+  function openInbox(cb) {
+    imap.openBox('INBOX', true, cb);
+  }
+  
+  imap.once('ready', function() {
+    openInbox(function(err, box) {
+      if (err) throw err;
+
+      // Fetch emails from mostRecentUID + 1 to '*'
+      let f = imap.seq.fetch(`${mostRecentUID + 1}:*`, {
+        bodies: ['HEADER.FIELDS (FROM TO SUBJECT DATE)'],
+        struct: true
+      });
+
+      f.on('message', function(msg, seqno) {
+        let parser = new MailParser();
+        msg.on('body', function(stream, info) {
+          stream.pipe(parser);
+        });
+        parser.on('headers', function(headers) {
+          // Insert the headers into the database
+          insertEmailHeader(accountId, headers);
+        });
+      });
+
+      f.once('error', function(err) {
+        console.log('Fetch error: ' + err);
+      });
+
+      f.once('end', function() {
+        console.log('Done fetching all new emails!');
+        imap.end();
+      });
+    });
+  });
+
+  imap.once('error', function(err) {
+    console.log(err);
+  });
+
+  imap.once('end', function() {
+    console.log('Connection ended');
+  });
+
+  imap.connect();
+
+  // Send a response to indicate the sync operation is underway
+  res.json({status: 'success', message: 'Sync operation started'});
+});
+
+async function getMostRecentUID(accountId) {
+  const [rows] = await db.query('SELECT MAX(uid) as maxUID FROM emailheaders WHERE accountId = ?', [accountId]);
+  return rows[0].maxUID || 0; // if no rows are returned, return 0
+}
+
+async function insertEmailHeader(accountId, headers) {
+  // Process the headers to extract the necessary information
+  let from = headers.get('from').text;
+  let to = headers.get('to').text;
+  let subject = headers.get('subject');
+  let date = headers.get('date');
+  
+  // Insert the processed headers into the database
+  const [result] = await db.query('INSERT INTO emailheaders (accountId, from, to, subject, date) VALUES (?, ?, ?, ?, ?)', [accountId, from, to, subject, date]);
+  return result.insertId;
+}
 
 
 

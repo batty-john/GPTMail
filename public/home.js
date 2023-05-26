@@ -72,77 +72,70 @@ const form = document.getElementById('addAccountForm');
     function updateAccounts() {
         console.log("inFunction");
         fetch('/accounts')
-          .then(response => response.json())
-          .then(accounts => {
-            console.log("response recieved");
-            const accountsDiv = document.getElementById('allAccounts');
-            // Clear the accounts list
-            accountsDiv.innerHTML = '';
-            // Add each account to the list
-            let accountsCount = 0;
-            for (const account of accounts) {
-                accountsCount++;
-              const div = document.createElement('div');
-              div.className = 'circle-account-name';
-              div.textContent = account.email.charAt(0).toUpperCase();
-              accountsDiv.appendChild(div);
-            }
+            .then(response => response.json())
+            .then(accounts => {
+                console.log("response recieved");
+                const accountsDiv = document.getElementById('allAccounts');
+                // Clear the accounts list
+                accountsDiv.innerHTML = '';
+                // Add each account to the list
+                let accountsCount = 0;
+                for (const account of accounts) {
+                    accountsCount++;
+                    const div = document.createElement('div');
+                    div.className = 'circle-account-name';
+                    div.textContent = account.email.charAt(0).toUpperCase();
+                    // Store the account ID in a data attribute
+                    div.dataset.accountId = account.id;
+                    div.onclick = function() {
+                        // When the circle is clicked, fetch emails for the associated account
+                        updateInbox(this.dataset.accountId);
+                    };
+                    accountsDiv.appendChild(div);
+                }
+    
+                // Call the function to get recent mails and display them
+                if (accountsCount > 0) {
+                    updateInbox(accounts[0].id); // Fetch emails for the first account by default
+                }
+    
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+    
 
-             // Call the function to get recent mails and display them
-            if(accountsCount > 0) {
-                updateInbox();
-            }
-             
 
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      }
-
-
-let lastUIDFetched = 0; // UID of the oldest email fetched
-let firstUIDFetched = Infinity; // UID of the most recent email fetched
-const pageSize = 10; // Number of emails to fetch at once
-
-
-      // New function to fetch recent mails and update the inbox
-      function updateInbox() {
-        let url = '/getRecentMail';
-        if (firstUIDFetched !== Infinity) {
-        url += `/${lastUIDFetched + 1}/${firstUIDFetched + pageSize}`
-        } else {
-        url += `/*/${pageSize}`
-        }
-
-        fetch(url)
-          .then(response => response.json())
-          .then(emails => {
-            let inboxEmailsDiv = document.getElementById('inbox-emails');
-            // Don't clear the inbox - we will be adding to it
-            for (let email of emails) {
-              let emailHTML = `
-                <div onclick="displayEmail(${JSON.stringify(email).split('"').join("&quot;")})">
-                    <div class="sender-line">
-                        <h3><strong>${email.from}</strong></h3>
-                        <p class="inbox-open-email-time">${email.date}</p>
-                    </div>
-                    <div class="subject-line"><p>${email.subject}</p></div>
-                    <div class="teaser-line"><p>${email.teaser}</p></div>
-                    <div class="email-border"></div>
+// New function to fetch recent mails and update the inbox
+function updateInbox(accountId) {
+    let url = `/getUserMail/${accountId}`;
+    
+  
+    fetch(url)
+      .then(response => response.json())
+      .then(emails => {
+        let inboxEmailsDiv = document.getElementById('inbox-emails');
+        // Don't clear the inbox - we will be adding to it
+        for (let email of emails) {
+          let emailHTML = `
+            <div onclick="displayEmail(${JSON.stringify(email).split('"').join("&quot;")})">
+                <div class="sender-line">
+                    <h3><strong>${email.sender}</strong></h3>
+                    <p class="inbox-open-email-time">${email.date}</p>
                 </div>
-              `;
-              inboxEmailsDiv.innerHTML += emailHTML;
-            }
-            if (emails.length > 0) {
-              lastUIDFetched = Math.min(lastUIDFetched, emails[emails.length - 1].uid);
-              firstUIDFetched = Math.max(firstUIDFetched, emails[0].uid);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      }
+                <div class="subject-line"><p>${email.subject}</p></div>
+                <div class="teaser-line"><p>${email.teaser}</p></div>
+                <div class="email-border"></div>
+            </div>
+          `;
+          inboxEmailsDiv.innerHTML += emailHTML;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
       
 
       function displayEmail(email) {
