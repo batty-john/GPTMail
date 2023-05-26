@@ -141,6 +141,7 @@ function updateInbox(accountId) {
       function displayEmail(email) {
         let mainDiv = document.querySelector('main');
         let inboxDiv = document.getElementById('inbox');
+        let contentDiv = document.getElementById('email-content-container');
         
         // Add 'open' class to the main and inbox divs
         mainDiv.classList.add('open');
@@ -150,10 +151,10 @@ function updateInbox(accountId) {
       
         // Use HTML if it exists, otherwise use text
         if (email.html && email.html.trim() !== "") {
-          mainDiv.innerHTML = email.html;
+          contentDiv.innerHTML = email.html;
         } else {
           // For text, replace newlines with <br> for proper formatting
-          mainDiv.innerHTML = `<p>${email.body.split('\n').join('<br>')}</p>`;
+          contentDiv.innerHTML = `<p>${email.body.split('\n').join('<br>')}</p>`;
         }
       }
       
@@ -163,6 +164,7 @@ function updateInbox(accountId) {
 
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
+        
       })
       
       

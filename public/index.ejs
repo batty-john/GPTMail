@@ -14,19 +14,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://kit.fontawesome.com/866758967d.js" crossorigin="anonymous"></script>
-    
+
+
 </head>
 
 <body>
     <div id="notice-bar">
         <p id="message"></p>
     </div>
-    
-    <div  id="wrapper">
+
+    <div id="wrapper">
         <nav>
             <header>
                 <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
+                
             </header>
             <ul>
                 <li><a class="current" #inbox>Inbox</a></li>
@@ -34,74 +37,107 @@
                 <li><a class="#favorite" #favorite>Favorite</a></li>
             </ul>
         </nav>
-    <div id="inbox" class="closed">
-        <form>
-            <input type="text" placeholder="Search">
-        </form>
+        <div id="inbox" class="closed">
+            <form>
+                <input type="text" placeholder="Search">
+            </form>
 
-        <div class="inbox-open-email" id="inbox-emails">
-            <div class="sender-line">
-                <h3><strong>Sender Name</strong></h3>
-                <p class="inbox-open-email-time">10:31</p>
-            </div>
-            <div class="subject-line"><p>Subject Line</p></div>
-            <div class="teaser-line"><p>Teaser Line</p></div>
+            <div class="inbox-open-email" id="inbox-emails">
+                <div class="email-container">
+                    <div class="popup-menu">
+                        <i class="far fa-trash-can"></i>
+                        <i class="far fa-folder"></i>
+                        <i class="far fa-flag"></i>
+                        <i class="far fa-star"></i>
+                    </div>
+                    <div class="sender-line">
+                        <h3><strong>Sender Name</strong></h3>
+                        <p class="inbox-open-email-time">10:31</p>
+                    </div>
+                    <div class="subject-line">
+                        <p>Subject Line</p>
+                    </div>
+                    <div class="teaser-line">
+                        <p>Teaser Line</p>
+                    </div>
 
-            <div class="email-border">
+                    <div class="email-border">
+                    </div>
+                </div>
+
+                <div class="email-container">
+                <div class="popup-menu">
+                    <i class="far fa-trash-can"></i>
+                    <i class="far fa-folder"></i>
+                    <i class="far fa-flag"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="sender-line">
+                    <h3><strong>John Batty</strong></h3>
+                    <p class="inbox-open-email-time">12:26</p>
+                </div>
+                <div class="subject-line">
+                    <p>Subject Line</p>
+                </div>
+                <div class="teaser-line">
+                    <p>Teaser Line</p>
+                </div>
+
+                <div class="email-border">
+                </div>
+                </div>
             </div>
 
-            <div class="sender-line">
-                <h3><strong>John Batty</strong></h3>
-                <p class="inbox-open-email-time">12:26</p>
-            </div>
-            <div class="subject-line"><p>Subject Line</p></div>
-            <div class="teaser-line"><p>Teaser Line</p></div>
-
-            <div class="email-border">
-            </div>
 
         </div>
-
-        
-    </div>
         <main class="closed">
-            <p>
-            The text inside of the emails will show up here
-        </p>
+            <div class="reply-menu">
+                <i class="far fa-reply"></i>
+                <i class="far fa-reply-all"></i>
+                <i class="far fa-share"></i>
+            </div>
+            <div id="close-email-view">
+                <button id="closebtn"><i class="fa-solid fa-xmark-large"></i></button>
+                <div id="email-content-container">
+                    
+                </div>
+           </div>
         </main>
-    <div id="accounts">
-        <div id="allAccounts"></div>
-        <div class="circle-account-name" id="addAccountButton">+</div>
-        
-    </div>
-    
+       
+            
+        </main>
+        <div id="accounts">
+            <div id="allAccounts"></div>
+            <div class="circle-account-name" id="addAccountButton">+</div>
 
-    <div id="addAccountModal" class="modal">
-        <div class="modal-content">
-          <span class="close">&times;</span>
-          <p>Add an Account</p>
-          <form id="addAccountForm">
-            <label for="email">Email:</label><br>
-            <input type="email" id="email" name="email" required><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required><br>
-            <label for="server">IMAP/POP3 Server:</label><br>
-            <input type="text" id="server" name="server" required><br>
-            <label for="port">Port:</label><br>
-            <input type="number" id="port" name="port" required><br>
-            <label for="protocol">Protocol:</label><br>
-            <select id="protocol" name="protocol" required>
-              <option value="IMAP">IMAP</option>
-              <option value="POP3">POP3</option>
-            </select><br>
-            <input type="submit" value="Add">
-          </form>
         </div>
-      </div>
-    
-</div>
 
-<script src="home.js"></script>
+
+        <div id="addAccountModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Add an Account</p>
+                <form id="addAccountForm">
+                    <label for="email">Email:</label><br>
+                    <input type="email" id="email" name="email" required><br>
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required><br>
+                    <label for="server">IMAP/POP3 Server:</label><br>
+                    <input type="text" id="server" name="server" required><br>
+                    <label for="port">Port:</label><br>
+                    <input type="number" id="port" name="port" required><br>
+                    <label for="protocol">Protocol:</label><br>
+                    <select id="protocol" name="protocol" required>
+                        <option value="IMAP">IMAP</option>
+                        <option value="POP3">POP3</option>
+                    </select><br>
+                    <input type="submit" value="Add">
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="home.js"></script>
 
 </body>
-
