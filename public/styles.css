@@ -124,6 +124,8 @@ form {
     min-height: 70px;
 }
 
+/* Email list contents */
+
 .sender-line {
     display: flex;
     justify-content: space-between;
@@ -162,6 +164,20 @@ form {
 
 .email-border {
     border-bottom: 2px solid;
+}
+
+.sender-line,
+.subject-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.inbox-open-email {
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 /* Menu on Email list */
@@ -242,19 +258,21 @@ main.closed {
 
 }
 
-/* #closebtn {
+#closebtn {
     border: none;
-    background: none;
+    background: transparent;
     cursor: pointer;
-} */
+}
 
 /* The Close Button */
 .close {
-    /* color: #aaa; */
+    color: #aaa;
+    font-size: 30px;
     display: flex;
     float: right;
     font-size: 30px;
     font-weight: bold;
+    border: none;
 }
 
 .close:hover,
@@ -323,16 +341,3 @@ main.closed {
 
 
 
-.sender-line,
-.subject-line {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.inbox-open-email {
-    max-width: 100%;
-    max-height: 90vh;
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
