@@ -48,6 +48,11 @@ app.get('/signup', (req, res) => {
   res.render('signup');
 });
 
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.post('/deleteMail/:accountId', async (req, res) => {
   const accountId = req.params.accountId;
   const uids = req.body.uids;
@@ -110,6 +115,11 @@ app.post('/deleteMail/:accountId', async (req, res) => {
   imap.connect();
 });
 
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.get('/getRecentMail/:start/:end', async (req, res) => {
   const userId = req.session.userId;
   let start = req.params.start;
@@ -266,6 +276,11 @@ app.get('/getRecentMail/:start/:end', async (req, res) => {
   imap.connect();
 });
 
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 async function getAllMailHeaders(accountId, userId, db) {
 
   console.log("accountID: " + accountId);
@@ -356,7 +371,7 @@ async function getAllMailHeaders(accountId, userId, db) {
         f.once('end', function() {
           console.log('Done fetching all messages!');
           imap.end();
-          res.json({ success: true, message: 'All email headers fetched and stored.' });
+          //res.json({ success: true, message: 'All email headers fetched and stored.' });
         });
       });
     });
@@ -374,7 +389,11 @@ async function getAllMailHeaders(accountId, userId, db) {
 }
 
 
-
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -389,6 +408,12 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.get('/login', (req, res) => {
   res.render('login');
 });
@@ -416,7 +441,12 @@ app.post('/login', async (req, res) => {
     }
   });
 
-  app.post('/addAccount', async (req, res) => {
+ /*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
+app.post('/addAccount', async (req, res) => {
     const { email, password, server, port, protocol } = req.body;
 
     // Check if user is logged in
@@ -464,6 +494,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.get('/accounts', async (req, res) => {
   console.log('GET request received at /accounts'); // Log to ensure the route is being hit
 
@@ -482,6 +517,11 @@ app.get('/accounts', async (req, res) => {
   }
 });
 
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.get('/getUserMail/:accountId', async (req, res) => {
   const accountId = req.params.accountId;
 
@@ -516,6 +556,12 @@ app.get('/getUserMail/:accountId', async (req, res) => {
   res.json(emails);
 });
 
+
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.get('/sync/:accountId', async (req, res) => {
   let accountId = req.params.accountId;
   
@@ -581,11 +627,22 @@ app.get('/sync/:accountId', async (req, res) => {
   res.json({status: 'success', message: 'Sync operation started'});
 });
 
+
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 async function getMostRecentUID(accountId) {
   const [rows] = await db.query('SELECT MAX(uid) as maxUID FROM emailheaders WHERE accountId = ?', [accountId]);
   return rows[0].maxUID || 0; // if no rows are returned, return 0
 }
 
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 async function insertEmailHeader(accountId, headers) {
   // Process the headers to extract the necessary information
   let from = headers.get('from').text;
@@ -601,7 +658,11 @@ async function insertEmailHeader(accountId, headers) {
 
 
   
-  // add a route for your index page
+  /*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
   app.get('/', (req, res) => {
     if (req.session.userId) {
       res.render('index');
@@ -610,6 +671,11 @@ async function insertEmailHeader(accountId, headers) {
     }
   });
   
+  /*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
   app.listen(3000, () => {
     console.log('Server started on port 3000');
   });
