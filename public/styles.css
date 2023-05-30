@@ -24,7 +24,7 @@ header {
 }
 
 #mainLogo {
-    height: 35px;
+    height: 40px;
     padding-top: .25em;
     padding-left: 1em;
 }
@@ -253,7 +253,6 @@ main.closed {
 
 #email-content-container {
     flex-grow: 1;
-    background-color: #0a0a0a;
     min-height: calc(100vh - 70px);
 
 }

@@ -157,7 +157,14 @@ function updateInbox(accountId) {
           contentDiv.innerHTML = `<p>${email.body.split('\n').join('<br>')}</p>`;
         }
       }
-      
+      function closeEmail(){
+        let mainDiv = document.querySelector('main');
+        let inboxDiv = document.getElementById('inbox');
+        mainDiv.classList.remove('open');
+        mainDiv.classList.add('closed');
+        inboxDiv.classList.remove('open');
+        inboxDiv.classList.add('closed');
+      }
       
       
       
@@ -165,6 +172,16 @@ function updateInbox(accountId) {
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
         
+
+        // CKEditor
+        ClassicEditor
+        .create(document.querySelector("#email-reply-container"))
+        .then(editor => {
+          console.log("CKEditor initialized");
+        })
+        .catch(error => {
+          console.error(error);
+        });
       })
       
       

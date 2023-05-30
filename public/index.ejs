@@ -16,6 +16,8 @@
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://kit.fontawesome.com/866758967d.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
+
 
 
 </head>
@@ -95,7 +97,7 @@
                 <i class="fas fa-reply btn"></i>
                 <i class="fas fa-reply-all btn"></i>
                 <i class="fas fa-share btn"></i>
-                <button id="close"><i class="fas fa-xmark"></i></button>
+                <button id="close" onclick="closeEmail()"><i class="fas fa-xmark"></i></button>
             </div>
             <div id="close-email-view">
 
@@ -103,10 +105,9 @@
             <div id="email-content-container">
                 <p>This is the content container</p>
             </div>
+            <div id="email-reply-container"></div>
         </main>
 
-
-        </main>
         <div id="accounts">
             <div id="allAccounts"></div>
             <div class="circle-account-name" id="addAccountButton">+</div>
