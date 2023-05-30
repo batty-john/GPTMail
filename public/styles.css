@@ -105,18 +105,34 @@ main.closed {
 }
 
 .reply-menu {
-    position: absolute;
+    display:flex;
+    justify-content: flex-end;
+    gap: 10px;
     top: 15px;
-    right: 15px;
+    right: 25px;
     visibility: visible;
     
 }
-/* .close-email-view {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    
-} */
+#close-email-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding:20px;
+  }
+
+  #email-content-container {
+    flex-grow: 1;
+    background-color: #0a0a0a;
+
+}
+#close {
+    border:none;
+    background:none;
+    cursor:pointer;
+}
+
 
 #inbox{
 flex-basis: 250px;
@@ -159,7 +175,7 @@ background-color: pink;
     visibility: hidden;
     
 }
-.popup-menu:hover {
+.btn:hover {
     color:yellowgreen;
 }
 
