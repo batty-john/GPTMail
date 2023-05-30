@@ -1,4 +1,5 @@
-* { box-sizing: border-box;
+* {
+    box-sizing: border-box;
 }
 
 body {
@@ -23,16 +24,16 @@ header {
 }
 
 #mainLogo {
-	height: 35px;
-	padding-top: .25em;
-	padding-left: 1em;
+    height: 35px;
+    padding-top: .25em;
+    padding-left: 1em;
 }
 
 h3 {
     padding-left: 1em;
 }
 
-h4{
+h4 {
     font-family: Tahoma, Arial, Sans-serif;
 }
 
@@ -43,10 +44,9 @@ nav {
     text-align: left;
     font-size: 1em;
     flex-basis: 150px;
-    /* flex-grow: 1; */
 }
 
-nav a { 
+nav a {
     text-decoration: none;
 }
 
@@ -64,7 +64,7 @@ nav ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
-    font-size: 1.25em;   
+    font-size: 1.25em;
 }
 
 nav li {
@@ -78,71 +78,17 @@ nav li a {
     padding: .5em 1em;
 }
 
-main{
-flex-basis: 600px;
-flex-grow: 2;
-background-color: rgb(88, 175, 175);
-text-align: center;
-padding-top: 2em;
-overflow-x: scroll;
-overflow-y: scroll;
-}
+/* Inbox List */
 
-main.closed {
-    display: none;
-}
-
-#close-email-view {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 20px;
-    height: 20px;
-    border: none;
-    background-color: transparent;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.reply-menu {
-    display:flex;
-    justify-content: flex-end;
-    gap: 10px;
-    top: 15px;
-    right: 25px;
-    visibility: visible;
-    
-}
-#close-email-view {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 600px;
-    margin: 0 auto;
-    padding:20px;
-  }
-
-  #email-content-container {
+#inbox {
+    flex-basis: 250px;
     flex-grow: 1;
-    background-color: #0a0a0a;
-
-}
-#close {
-    border:none;
-    background:none;
-    cursor:pointer;
-}
-
-
-#inbox{
-flex-basis: 250px;
-flex-grow: 1;
-background-color: pink;
+    background-color: pink;
 }
 
 #inbox.open {
     max-width: 300px;
-    }
+}
 
 #inbox ul {
     display: flex;
@@ -150,7 +96,7 @@ background-color: pink;
     list-style-type: none;
     padding: 0;
     margin: 0;
-    font-size: 1em;   
+    font-size: 1em;
 }
 
 #inbox li {
@@ -164,42 +110,9 @@ background-color: pink;
     padding: .5em 1em;
 }
 
-#inbox-emails {
-    
-}
+#inbox-emails {}
 
-.popup-menu {
-    position: absolute;
-    top: 20px;
-    right: 15px;
-    visibility: hidden;
-    
-}
-.btn:hover {
-    color:yellowgreen;
-}
-
-.email-container {
-    position: relative;
-    /* height: 70px; */
-}
-
-.email-container:hover {
-    background-color:#ebd1d1
-}
-.email-container .popup-menu {
-    visibility: hidden;
-}
-
-.email-container:hover .popup-menu {
-    visibility:visible;
-}
-
-#accounts{
-flex-basis: 60px;
-flex-grow: 0;
-
-}
+/* Search bar */
 
 form {
     display: flex;
@@ -208,6 +121,7 @@ form {
     padding-right: 1em;
     padding-top: 1em;
     width: 100%;
+    min-height: 70px;
 }
 
 .sender-line {
@@ -227,90 +141,198 @@ form {
 
 .subject-line {
     display: flex;
-    /* justify-content: space-between; */
     flex-direction: row;
     padding-left: 1em;
-
 }
 
 .subject-line p {
     margin: 0;
 }
+
 .sender-line h3 {
-    margin:0;
+    margin: 0;
 }
+
 .teaser-line {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    padding-left: 1em;  
+    padding-left: 1em;
 }
+
 .email-border {
-    border-bottom: 2px solid ;
+    border-bottom: 2px solid;
 }
 
-.circle-account-name {
-        border-radius: 50%;
-        background-color: red;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        height: 50px;
-        width: 50px;
-        margin-top: 5px;
-        margin-left: 5px;
+/* Menu on Email list */
+
+.popup-menu {
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    visibility: hidden;
+
 }
 
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-  
-  /* Modal Content/Box */
-  .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-  }
-  
-  /* The Close Button */
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
+.btn:hover {
+    color: yellowgreen;
+}
+
+.email-container {
+    position: relative;
+}
+
+.email-container:hover {
+    background-color: #ebd1d1
+}
+
+.email-container .popup-menu {
+    visibility: hidden;
+}
+
+.email-container:hover .popup-menu {
+    visibility: visible;
+}
+
+/* Main Email View */
+
+main {
+    flex-basis: 600px;
+    flex-grow: 2;
+    background-color: rgb(88, 175, 175);
+    text-align: center;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+main.closed {
+    display: none;
+}
+
+#close-email-view {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background-color: transparent;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
+    cursor: pointer;
+}
+
+.reply-menu {
+    font-size: 30px;
+    display: flex;
+    justify-content: right;
+    padding-right: 90px;
+    gap: 30px;
+    top: 15px;
+    right: 25px;
+    visibility: visible;
+    min-height: 70px;
+    padding-top: 32px;
+
+}
+
+#email-content-container {
+    flex-grow: 1;
+    background-color: #0a0a0a;
+    min-height: calc(100vh - 70px);
+
+}
+
+/* #closebtn {
+    border: none;
+    background: none;
+    cursor: pointer;
+} */
+
+/* The Close Button */
+.close {
+    /* color: #aaa; */
+    display: flex;
+    float: right;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}
 
-  .sender-line, .subject-line {
+/* Accounts */
+
+#accounts {
+    flex-basis: 60px;
+    flex-grow: 0;
+}
+
+.circle-account-name {
+    border-radius: 50%;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    height: 50px;
+    width: 50px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+}
+
+
+
+.sender-line,
+.subject-line {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  
-  .inbox-open-email {
+}
+
+.inbox-open-email {
     max-width: 100%;
     max-height: 90vh;
     overflow-x: hidden;
     overflow-y: scroll;
-  }
+}
