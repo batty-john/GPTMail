@@ -154,10 +154,13 @@ background-color: pink;
 
 .popup-menu {
     position: absolute;
-    top: 15px;
+    top: 20px;
     right: 15px;
     visibility: hidden;
     
+}
+.popup-menu:hover {
+    color:yellowgreen;
 }
 
 .email-container {
