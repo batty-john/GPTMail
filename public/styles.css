@@ -44,11 +44,11 @@ header {
 .search-form {
     display: flex;
     flex-direction: column;
+    padding-top: 1.5em;
     padding-left: 6em;
-    padding-right: 3em;
-    padding-top: 1.25em;
-    width: 100%;
+    width: 45%;
     min-height: 70px;
+    margin-right: auto;
 }
 
 h3 {
@@ -135,7 +135,7 @@ nav li a {
     display: flex;
     flex-direction: column;
     list-style-type: none;
-    padding: 0;
+    padding-top: 1em;
     margin: 0;
     font-size: 1em;
 }
@@ -168,6 +168,7 @@ nav li a {
     text-align: right;
     align-self: right;
     padding-right: 1em;
+    padding-top: .5em;
     margin-top: 0;
     max-width: 100px;
 }
@@ -179,6 +180,9 @@ nav li a {
 }
 
 .subject-line p {
+    display: flex;
+    flex-direction: row;
+    padding-top: .5em;
     margin: 0;
 }
 
@@ -288,26 +292,23 @@ main.closed {
 
 }
 
-#closebtn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-}
-
 /* The Close Button */
-.close {
-    color: #aaa;
-    font-size: 30px;
-    display: flex;
-    float: right;
-    font-size: 30px;
-    font-weight: bold;
+
+#close {
+    background-color: transparent;
     border: none;
+    cursor: pointer;
+    padding-left: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 35px;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
+#close:hover,
+#close:focus {
+    color: yellowgreen;
     text-decoration: none;
     cursor: pointer;
 }
