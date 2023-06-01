@@ -119,15 +119,27 @@ function updateInbox(accountId) {
         // Don't clear the inbox - we will be adding to it
         for (let email of emails) {
           let emailHTML = `
-            <div onclick="displayEmail(${JSON.stringify(email).split('"').join("&quot;")})">
-                <div class="sender-line">
-                    <h3><strong>${email.sender}</strong></h3>
-                    <p class="inbox-open-email-time">${email.date}</p>
-                </div>
-                <div class="subject-line"><p>${email.subject}</p></div>
-                <div class="teaser-line"><p>${email.teaser}</p></div>
-                <div class="email-border"></div>
+          <div class="email-container">
+            <div class="popup-menu">
+              <i class="far fa-trash-can btn"></i>
+              <i class="far fa-folder btn"></i>
+              <i class="far fa-flag btn"></i>
+              <i class="far fa-star btn"></i>
             </div>
+            <div class="sender-line">
+              <h3><strong>${email.sender}</strong></h3>
+              <p class="inbox-open-email-time">12:26</p>
+            </div>
+            <div class="subject-line">
+              <p>${email.subject}</p>
+            </div>
+            <div class="teaser-line">
+              <p>${email.preheader}</p>
+            </div>
+
+            <div class="email-border">
+            </div>
+        </div>
           `;
           inboxEmailsDiv.innerHTML += emailHTML;
         }
@@ -138,7 +150,7 @@ function updateInbox(accountId) {
   }
       
 
-      function displayEmail(email) {
+      function displayEmail(uid) {
         let mainDiv = document.querySelector('main');
         let inboxDiv = document.getElementById('inbox');
         let contentDiv = document.getElementById('email-content-container');
@@ -148,14 +160,13 @@ function updateInbox(accountId) {
         mainDiv.classList.remove('closed')
         inboxDiv.classList.add('open');
         inboxDiv.classList.remove('closed');
-      
-        // Use HTML if it exists, otherwise use text
-        if (email.html && email.html.trim() !== "") {
-          contentDiv.innerHTML = email.html;
-        } else {
-          // For text, replace newlines with <br> for proper formatting
-          contentDiv.innerHTML = `<p>${email.body.split('\n').join('<br>')}</p>`;
-        }
+      let url = `/displayEmail/${uid}`;
+      fetch(url)
+        .then(respone => response.json())
+        .then(email => {
+
+          contentDiv.innerHTML = email.body;
+        })
       }
       function closeEmail(){
         let mainDiv = document.querySelector('main');

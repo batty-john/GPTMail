@@ -655,7 +655,15 @@ async function insertEmailHeader(accountId, headers) {
   return result.insertId;
 }
 
+/***************************************************
+ * 
+ * 
+ * 
+ ************************************************/
+app.get('/displayEmail:uid',(req, res) => {
 
+
+});
 
   
   /*********************************************

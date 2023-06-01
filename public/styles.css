@@ -221,6 +221,7 @@ nav li a {
     position: absolute;
     top: 20px;
     right: 15px;
+    padding-top: .5em;
     visibility: hidden;
 
 }
