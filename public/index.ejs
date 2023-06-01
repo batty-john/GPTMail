@@ -26,25 +26,25 @@
     <div id="notice-bar">
         <p id="message"></p>
     </div>
-
-    <div id="wrapper">
+    <header>
+        <div class="logo">
+        <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
+        </div>
+        <form class="search-form">
+            <input type="text" placeholder="Search">
+        </form>
+    </header>
+    <div id="wrapper">  
         <nav>
-            <header>
-                <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
-
-            </header>
-            <ul>
-                <li><a class="current" #inbox>Inbox</a></li>
-                <li><a class="#sent" #sent>Sent</a></li>
-                <li><a class="#favorite" #favorite>Favorite</a></li>
-                <li><a class="#deleted" #deleted>Deleted</a></li>
-            </ul>
+            <div class="folder-column">
+                <div class="folder-item">Inbox</div>
+                <div class="folder-item">Sent</div>
+                <div class="folder-item">Drafts</div>
+                <div class="folder-item">Trash</div>
+            </div>
+            
         </nav>
         <div id="inbox" class="closed">
-            <form>
-                <input type="text" placeholder="Search">
-            </form>
-
             <div class="inbox-open-email" id="inbox-emails">
                 <div class="email-container">
                     <div class="popup-menu">
