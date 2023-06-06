@@ -660,10 +660,92 @@ async function insertEmailHeader(accountId, headers) {
  * 
  * 
  ************************************************/
-app.get('/displayEmail:uid',(req, res) => {
+app.get('/displayEmail/:accountId/:uid', async (req, res) => {
+const uid = req.params.uid;
+const accountId = req.params.accountId;
+const userId = req.session.userId;
+console.log(`in displayEmail/${accountId}/${uid}`);
+if (!userId) {
+  return res.status(401).send('Not logged in');
+}
+const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+  const account = accounts[0]
 
+if (account.user_id !== userId) {
+  return res.status(403).send('Not authorized to access this account');
+}
 
+// TODO: decrypt password
+const decryptedPassword = account.password; 
+
+var imap = new Imap({
+  user: account.email,
+  password: decryptedPassword,
+  host: account.imap_server,
+  port: account.imap_port,
+  tls: true
 });
+
+var emailBody = '';
+
+function openInbox(cb) {
+  imap.openBox('INBOX', true, cb);
+}
+
+const fetchOptions = {
+  bodies: ['TEXT', ''],
+};
+
+imap.once('ready', function() {
+  console.log('in imap once ready');
+  openInbox(function(err, box) {
+    if (err) throw err;
+
+    imap.fetch(uid, fetchOptions)
+    .on('message', function(msg) {
+      const mailParser = new MailParser();   
+
+      msg.on('body', function(stream) {
+        stream.on('data', function(chunk) {
+          mailParser.write(chunk.toString('utf8'));
+        });
+      });
+
+      msg.on('end', function() {
+        console.log('in message.on end');
+        mailParser.end();
+      });
+
+      mailParser.on('data', function(part){
+        console.log('in mailParser.on part');
+        console.dir(part);
+        if (part.type === 'text' && part.subtype === 'plain'){
+          console.log('Text body: '+ part.text);
+          emailBody += part.text;
+        }
+        
+
+      });
+
+      mailParser.on('end', function(mail) {
+        // Here, 'mail' will contain the parsed content of the email
+        res.json(emailBody
+          );
+      });
+
+    })
+    .on('error', function(err) {
+      // Handle any fetch errors
+    })
+    .on('end', function() {
+      // End of fetching
+      imap.end();
+    });
+  });
+});
+imap.connect(); // Establish the connection
+});
+
 
   
   /*********************************************

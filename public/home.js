@@ -1,3 +1,5 @@
+// const { response } = require("express");
+
 // Get the modal
 var modal = document.getElementById("addAccountModal");
 
@@ -118,8 +120,9 @@ function updateInbox(accountId) {
         let inboxEmailsDiv = document.getElementById('inbox-emails');
         // Don't clear the inbox - we will be adding to it
         for (let email of emails) {
+          console.log(email);
           let emailHTML = `
-          <div class="email-container">
+          <div class="email-container" onclick = "displayEmail(${email.UID}, ${accountId})">
             <div class="popup-menu">
               <i class="far fa-trash-can btn"></i>
               <i class="far fa-folder btn"></i>
@@ -150,7 +153,7 @@ function updateInbox(accountId) {
   }
       
 
-      function displayEmail(uid) {
+      function displayEmail(uid, accountId) {
         let mainDiv = document.querySelector('main');
         let inboxDiv = document.getElementById('inbox');
         let contentDiv = document.getElementById('email-content-container');
@@ -160,12 +163,14 @@ function updateInbox(accountId) {
         mainDiv.classList.remove('closed')
         inboxDiv.classList.add('open');
         inboxDiv.classList.remove('closed');
-      let url = `/displayEmail/${uid}`;
+        console.log(`in display email/${uid}`);
+      let url = `/displayEmail/${accountId}/${uid}`;
+      
       fetch(url)
-        .then(respone => response.json())
+        .then(response => response.json())
         .then(email => {
-
-          contentDiv.innerHTML = email.body;
+          console.log(email);
+          contentDiv.innerHTML = email;
         })
       }
       function closeEmail(){
