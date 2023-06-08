@@ -49,6 +49,7 @@ header {
     width: 45%;
     min-height: 70px;
     margin-right: auto;
+    border-radius: 5px;
 }
 
 h3 {
@@ -79,6 +80,7 @@ h4 {
 /* CSS for the selected folder */
 .folder-item:hover {
     background-color: #e0e0e0;
+    border-radius: 7px;
 }
 
  nav {
