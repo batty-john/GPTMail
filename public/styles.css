@@ -122,13 +122,13 @@ nav li a {
 /* Inbox List */
 
 #inbox {
-    flex-basis: 250px;
-    flex-grow: 1;
+    flex-basis: 300px;
+    flex-grow: 1.5;
     background-color: pink;
 }
 
 #inbox.open {
-    max-width: 300px;
+    max-width: 375px;
 }
 
 #inbox ul {
@@ -159,50 +159,70 @@ nav li a {
 
 .sender-line {
     display: flex;
+    align-items: center;
+    height: 30px;
+    font-weight: bold;
     justify-content: space-between;
     flex-direction: row;
-    height: 25px;
+    /* height: 25px; */
 }
 
 .inbox-open-email-time {
     text-align: right;
     align-self: right;
     padding-right: 1em;
-    padding-top: .5em;
+    padding-top: .75em;
     margin-top: 0;
-    max-width: 100px;
+    max-width: 100px; 
 }
 
 .subject-line {
     display: flex;
-    flex-direction: row;
+    align-items: center;
+    width: 70%;
+    /* flex-direction: row; */
     padding-left: 1em;
 }
 
 .subject-line p {
-    display: flex;
+    margin: 0;
+    padding-top: 0.5em;
+    font-size: 14px;
+    color: #333;
+    z-index: 1;
+    /* display: flex;
     flex-direction: row;
     padding-top: .5em;
-    margin: 0;
+    margin: 0; */
 }
 
 .sender-line h3 {
+    font-size: 16px;
     margin: 0;
 }
 
 .teaser-line {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    flex-direction: row;
     padding-left: 1em;
+    /* justify-content: space-between;
+    flex-direction: row;
+    padding-left: 1em; */
+}
+
+.teaser-line p {
+    font-size: 13px;
+    color: #777;
 }
 
 .email-border {
-    border-bottom: 2px solid;
+    border-bottom: 1px solid #ccc;
 }
 
 .sender-line,
-.subject-line {
+.subject-line,
+.teaser-line {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -211,8 +231,10 @@ nav li a {
 .inbox-open-email {
     max-width: 100%;
     max-height: 90vh;
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: auto;
+    z-index: 0;
+    /* overflow-x: hidden;
+    overflow-y: scroll; */
 }
 
 /* Menu on Email list */
@@ -292,6 +314,14 @@ main.closed {
     min-height: calc(100vh - 70px);
 
 }
+#email-reply-container {
+    display: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
 
 /* The Close Button */
 

@@ -28,13 +28,13 @@
     </div>
     <header>
         <div class="logo">
-        <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
+            <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
         </div>
         <form class="search-form">
             <input type="text" placeholder="Search">
         </form>
     </header>
-    <div id="wrapper">  
+    <div id="wrapper">
         <nav>
             <div class="folder-column">
                 <div class="folder-item">Inbox<span class="new-email-cout"></span></div>
@@ -42,7 +42,7 @@
                 <div class="folder-item">Drafts</div>
                 <div class="folder-item">Trash</div>
             </div>
-            
+
         </nav>
         <div id="inbox" class="closed">
             <div class="inbox-open-email" id="inbox-emails">
@@ -95,18 +95,21 @@
         </div>
         <main class="closed">
             <div class="reply-menu">
-                <i class="fas fa-reply btn"></i>
-                <i class="fas fa-reply-all btn"></i>
-                <i class="fas fa-share btn"></i>
+                <i class="fas fa-reply btn" id="replyButton"></i>
+                <i class="fas fa-reply-all btn" id="replyAllButton"></i>
+                <i class="fas fa-share btn" id="forwardButton"></i>
                 <i class="fas fa-trash btn"></i>
                 <button id="close" onclick="closeEmail()"><i class="fa-solid fa-xmark"></i></button>
             </div>
+
             <div id="close-email-view">
             </div>
             <div id="email-content-container">
                 <p>This is the content container</p>
             </div>
-            <div id="email-reply-container"></div>
+            <div id="email-reply-container" class="hidden">
+                <textarea id="editorElementId"></textarea>
+            </div>
         </main>
 
         <div id="accounts">

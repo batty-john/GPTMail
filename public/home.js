@@ -200,4 +200,20 @@ function updateInbox(accountId) {
         });
       })
       
-      
+    let replyButton = document.getElementById('replyButton');
+    let replyAllButton = document.getElementById('replyAllButton');
+    let forwardButton = document.getElementById('forwardButton');
+    let emailReplyContainer = document.getElementById('email-reply-container');
+    let editorInstance = null;
+
+    function showEditor() {
+      emailReplyContainer.classList.toggle('hidden');
+      if (!editorInstance) {
+        editorInstance = CKEDITOR.replace('editorElementId');
+        console.log("CKEditor initialized");
+      }
+    }
+    
+    replyButton.addEventListener('click', showEditor);
+    replyAllButton.addEventListener('click', showEditor);
+    forwardButton.addEventListener('click', showEditor);
