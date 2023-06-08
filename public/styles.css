@@ -27,11 +27,6 @@ header {
     padding: 0 20px;
 }
 
-/* .logo {
-    height: 50px;
-    padding-top: 1em;
-    padding-left: 3em;
-} */
 #mainLogo {
     height: 70px;
     padding-top: 1em;
@@ -84,6 +79,9 @@ h4 {
     border-radius: 7px;
 }
 
+#composeButton {
+    height: 50px;
+}
  nav {
     text-align: left;
     font-size: 1em;
