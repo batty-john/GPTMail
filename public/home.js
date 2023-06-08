@@ -191,7 +191,7 @@ function updateInbox(accountId) {
 
         // CKEditor
         ClassicEditor
-        .create(document.querySelector("#email-reply-container"))
+        .create(document.querySelector("#email-reply-location"))
         .then(editor => {
           console.log("CKEditor initialized");
         })
@@ -207,11 +207,8 @@ function updateInbox(accountId) {
     let editorInstance = null;
 
     function showEditor() {
-      emailReplyContainer.classList.toggle('hidden');
-      if (!editorInstance) {
-        editorInstance = CKEDITOR.replace('editorElementId');
-        console.log("CKEditor initialized");
-      }
+      emailReplyContainer.classList.remove('hidden');
+      emailReplyContainer.style.display='block';
     }
     
     replyButton.addEventListener('click', showEditor);
