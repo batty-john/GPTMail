@@ -50,6 +50,7 @@ header {
     min-height: 70px;
     margin-right: auto;
     border-radius: 5px;
+    opacity: .6;
 }
 
 h3 {
@@ -88,38 +89,6 @@ h4 {
     font-size: 1em;
     flex-basis: 150px;
 }
-
-/* nav a {
-    text-decoration: none;
-}
-
-nav a:link {
-    color: #FEF6C2;
-}
-
-nav a:hover {
-    background-color: #837f7f;
-}
-
-nav ul {
-    display: flex;
-    flex-direction: column;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    font-size: 1.25em;
-}
-
-nav li {
-    padding: .5em 1em;
-    width: 100%;
-}
-
-nav li a {
-    display: flex;
-    flex-direction: column;
-    padding: .5em 1em;
-} */ 
 
 /* Inbox List */
 
