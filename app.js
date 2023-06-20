@@ -54,9 +54,14 @@ app.get('/signup', (req, res) => {
  * 
  *******************************************/
 app.post('/deleteMail/:accountId', async (req, res) => {
-  const accountId = req.params.accountId;
-  const uids = req.body.uids;
-
+  try {
+    const accountId = req.params.accountId;
+    const uids = req.body.uids;
+  }
+  catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
   // Check if the user is logged in and the accountId belongs to them
   const userId = req.session.userId;
   if (!userId) {
@@ -92,7 +97,7 @@ app.post('/deleteMail/:accountId', async (req, res) => {
         imap.move(uid, 'Trash', function(err) {
           if (err) {
             console.log(`Error moving email with UID ${uid} to trash:`, err);
-            res.send(`Error moving email with UID ${uid} to trash`);
+            res.json({success: true, message:`Error moving email with UID ${uid} to trash`});
           } else {
             console.log(`Successfully moved email with UID ${uid} to trash`);
           }
@@ -100,7 +105,7 @@ app.post('/deleteMail/:accountId', async (req, res) => {
       });
 
       // Send a response when all emails have been processed
-      res.send('Successfully moved emails to trash');
+      res.json({ success: true, message: 'Email deleted' });
     });
   });
 

@@ -122,9 +122,9 @@ function updateInbox(accountId) {
         for (let email of emails) {
           console.log(email);
           let emailHTML = `
-          <div class="email-container" onclick = "displayEmail(${email.UID}, ${accountId})">
+          <div class="email-container" id= "emailContainer${email.UID}" onclick = "displayEmail(${email.UID}, ${accountId})">
             <div class="popup-menu">
-              <i class="far fa-trash-can btn"></i>
+              <i class="far fa-trash-can btn" onclick = "deleteSingle(${accountId},${email.UID})"></i>
               <i class="far fa-folder btn"></i>
               <i class="far fa-flag btn"></i>
               <i class="far fa-star btn"></i>
@@ -182,7 +182,47 @@ function updateInbox(accountId) {
         inboxDiv.classList.add('closed');
       }
       
+      // function deleteSingle(accountId, uid){
+      //   const config = {
+      //     method:'POST',
+      //     headers: {
+      //       'Content-Type': 'application/json'
+      //     },
+      //     body: {"uids": uid}
+
+      //   }
+
+      //   fetch(`deleteMail/${accountId}`, config)
+      //   .then(response => response.json())
+      //   .then(response => {console.log(response);})
+      //   .catch(err => console.error(err));
+
+      //   let email= document.getElementById('emailContainer'+ uid);
+      //   email.remove();
+      // } 
+
+      async function deleteSingle(accountId, uid) {
+        try {
+          const config = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ uids: uid }) // Convert the object to JSON string
+          };
       
+          const response = await fetch(`deleteMail/${accountId}`, config);
+          const data = await response.json();
+      
+          console.log(data);
+      
+          // Remove the email container from the DOM
+          let email = document.getElementById('emailContainer' + uid);
+          email.remove();
+        } catch (err) {
+          console.error(err);
+        }
+      }
       
 
       document.addEventListener('DOMContentLoaded', (event) => {
