@@ -392,6 +392,37 @@ async function getAllMailHeaders(accountId, userId, db) {
 
   imap.connect();
 }
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
+app.get('/getLabelList', async (req, res) => {
+
+
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in to add an account');
+  }
+  const query = 'SELECT * FROM labels WHERE userId = ?';
+  const userId = req.session.userId;
+
+
+  let [labels] = await db.query (query, userId);
+  res.json(labels);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*********************************************

@@ -224,10 +224,42 @@ function updateInbox(accountId) {
         }
       }
       
+        function getLabelList(){
+
+          fetch('/getLabelList')
+          .then(response => response.json())
+          .then(labels => {
+            console.log("response recieved-getlabellist");
+            const labelsDiv = document.getElementById('labelsList');
+            // Clear the labels list
+            labelsDiv.innerHTML = '';
+            // Add each label to the list
+            let labelsCount = 0;
+            console.log(labels);
+            for (const label of labels) {
+                labelsCount++;
+                console.log(label);
+                const div = document.createElement('div');
+                div.className = 'label-list-item';
+                div.textContent = label.label_name;
+                console.log(label.label_name);
+                // Store the label ID in a data attribute
+                div.dataset.labelID = label.labelID;
+                div.onclick = function() {
+                    // When the circle is clicked, fetch emails for the associated account
+                    getEmailsByLabel(this.dataset.labelID);
+                };
+                labelsDiv.appendChild(div);
+            }
+          })
+        }
+
+
 
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
-        
+      
+        getLabelList();
 
         // CKEditor
         ClassicEditor
