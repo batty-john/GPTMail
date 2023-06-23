@@ -70,6 +70,7 @@ h4 {
 /* CSS for each folder item */
 .folder-item {
     padding: 15px;
+    font-size: 18px;
     cursor: pointer;
 }
 
@@ -79,12 +80,53 @@ h4 {
     border-radius: 7px;
 }
 
+.folder-header {
+    font-size: 20px;
+    font-weight: 530;
+    /* word-spacing: 70px; */
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#labelsList {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 14px;
+    position: relative;
+    /* padding-top: 1em; */
+}
+
+.label-list-item {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.label-color-icon {
+    
+    width: .8em;
+    height: .8em;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
 #composeButton {
     height: 50px;
     border-radius: 5px;
     text-align: left;
     font-size: 17px;
 }
+
+.hidden {
+    display: none;
+}
+
  nav {
     text-align: left;
     font-size: 1em;
@@ -222,6 +264,22 @@ h4 {
 .btn:hover {
     color: yellowgreen;
 }
+
+.folder-btn {
+    background-color: #e1e1e1;
+    border-radius: 50%;
+    padding: 3px;
+    float: right;
+}
+
+.folder-btn:hover {
+    background-color: #777;
+    color: #e1e1e1;
+
+}
+
+
+
 
 .email-container {
     position: relative;
@@ -372,5 +430,18 @@ main.closed {
     /* Could be more or less, depending on screen size */
 }
 
+/*  Add Label Popup*/
 
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
 

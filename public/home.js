@@ -1,4 +1,4 @@
-// const { response } = require("express");
+
 
 // Get the modal
 var modal = document.getElementById("addAccountModal");
@@ -239,8 +239,14 @@ function updateInbox(accountId) {
             for (const label of labels) {
                 labelsCount++;
                 console.log(label);
+
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'label-color-icon';
+                colorDiv.style.backgroundColor = label.color;
+
+
                 const div = document.createElement('div');
-                div.className = 'label-list-item';
+                div.className = 'label-list-item folder-item';
                 div.textContent = label.label_name;
                 console.log(label.label_name);
                 // Store the label ID in a data attribute
@@ -249,12 +255,69 @@ function updateInbox(accountId) {
                     // When the circle is clicked, fetch emails for the associated account
                     getEmailsByLabel(this.dataset.labelID);
                 };
+
+                div.appendChild(colorDiv);
                 labelsDiv.appendChild(div);
             }
           })
         }
+        function addLabelpopup(){
 
+          const popupContainer = document.getElementById("popupContainer");
+          const popup = document.createElement("div");
+          popup.className = "popup";
 
+      // Create the label input field
+      const labelInput = document.createElement("input");
+      labelInput.type = "text";
+      labelInput.placeholder = "Enter label name";
+      popup.appendChild(labelInput);
+
+       // Create the submit button
+       const submitButton = document.createElement("button");
+       submitButton.textContent = "Submit";
+       submitButton.addEventListener("click", function() {
+         const labelName = labelInput.value;
+         addLabel(labelName);
+         closePopup();
+       });
+       popup.appendChild(submitButton);
+
+      // Append the popup to the container
+      popupContainer.appendChild(popup);
+
+      // Set focus on the input field
+      labelInput.focus();
+
+        }
+
+        function addLabel(labelName) {
+          // Function to handle label addition
+          // Replace with your desired logic
+          console.log("Adding label:", labelName);
+          labelName = String(labelName); 
+          fetch (`/addLabel/${labelName}`)
+          .then(response => response.json())
+          .then(response => {
+            console.log (response);
+            getLabelList();
+          });
+        }
+    
+        function closePopup() {
+          // Function to close the popup
+          const popupContainer = document.getElementById("popupContainer");
+          popupContainer.innerHTML = "";
+        }
+
+      function toggleLabelList() {
+
+        let list= document.getElementById('labelsList');
+        list.classList.toggle('hidden');
+        let toggle = document.getElementById('labelToggle');
+        toggle.classList.toggle('fa-angle-up');
+        toggle.classList.toggle('fa-angle-down');
+      }
 
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();

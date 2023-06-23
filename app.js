@@ -412,6 +412,27 @@ app.get('/getLabelList', async (req, res) => {
 });
 
 
+app.get('/addLabel/:label_name', async (req, res) => {
+
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in to add an account');
+  }
+
+  const query = 'INSERT INTO labels (label_name, userId, color) VALUES (?,?,?)';
+  const userId = req.session.userId;
+  const color = "#ffffff";
+  const labelName = req.params.label_name;
+
+  try {
+    
+    await db.query (query, [labelName, userId, color]);
+    res.status(200);
+  }
+  catch (err) {
+    res.status(500).send('Error adding label: ' + err.message);
+  }
+});
+
 
 
 

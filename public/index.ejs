@@ -43,8 +43,16 @@
                 <div class="folder-item">Sent</div>
                 <div class="folder-item">Drafts</div>
                 <div class="folder-item">Trash</div>
-                <div class="folder-item">Labels
-                    <div id="labelsList"></div>
+                <div class="folder-header">
+                    <span onclick="toggleLabelList()">
+                      Labels <i class="fas fa-angle-down" id="labelToggle"></i>
+                    </span>
+                    <i class="far fa-plus btn folder-btn" onclick = "addLabelpopup()"></i> 
+        
+                <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
+                    <div id="labelsList" class="hidden">
+                        
+                    </div>
                 </div>
             </div>
 
@@ -152,6 +160,9 @@
 
     </div>
 
+
+    <div id="popupContainer"></div>
+    
     <script src="home.js"></script>
 
 </body>
