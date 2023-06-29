@@ -38,7 +38,8 @@
     <div id="wrapper">
         <nav>
             <div class="folder-column">
-                <button id="composeButton">Compose</button>
+                <button id="composeButton" onclick = "openCompose()">Compose</button>
+
                 <div class="folder-item">Inbox<span class="new-email-count"></span></div>
                 <div class="folder-item">Sent</div>
                 <div class="folder-item">Drafts</div>
@@ -107,7 +108,7 @@
 
         </div>
         <main class="closed">
-            <div class="reply-menu">
+            <div class="reply-menu" id="reply-menu">
                 <i class="fas fa-reply btn" id="replyButton"></i>
                 <i class="fas fa-reply-all btn" id="replyAllButton"></i>
                 <i class="fas fa-share btn" id="forwardButton"></i>
@@ -121,8 +122,36 @@
                 <p>This is the content container</p>
             </div>
             <div id="email-reply-container" class="hidden">
+                <div id="sendInputs">
+                
+                <div>
+                    <label for="fromInput">From:</label>
+                    <select id="fromInput" >
+                        <option value="9">morgan.thacker@ducimus.digital</option>
+                    </select>
+                  </div>
+                <div>
+                    <label for="toInput">To:</label>
+                    <input type="text" id="toInput">
+                  </div>
+                  <div id="ccContainer" class="hidden">
+                    <label for="cc">CC:</label>
+                    <input type="text" id="cc">
+                  </div>
+                  <div id="bccContainer" class="hidden">
+                    <label for="bcc">BCC:</label>
+                    <input type="text" id="bcc">
+                  </div>
+                  <div>
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject">
+                    <button id="sendButton" onclick = "sendEmail()">Send</button>
+                  </div>
+                  
+                </div>
                 <div id="email-reply-location">
                     <textarea id="editorElementId"></textarea>
+                    
                 </div>
                 
             </div>

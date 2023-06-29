@@ -78,6 +78,8 @@ const form = document.getElementById('addAccountForm');
             .then(accounts => {
                 console.log("response recieved");
                 const accountsDiv = document.getElementById('allAccounts');
+                const fromDiv = document.getElementById('fromInput');
+                fromDiv.innerHTML = "";
                 // Clear the accounts list
                 accountsDiv.innerHTML = '';
                 // Add each account to the list
@@ -87,6 +89,10 @@ const form = document.getElementById('addAccountForm');
                     const div = document.createElement('div');
                     div.className = 'circle-account-name';
                     div.textContent = account.email.charAt(0).toUpperCase();
+                    const option = document.createElement('option');
+                    option.value = account.id;
+                    option.innerHTML = account.email;
+                    fromDiv.appendChild(option);
                     // Store the account ID in a data attribute
                     div.dataset.accountId = account.id;
                     div.onclick = function() {
@@ -319,6 +325,58 @@ function updateInbox(accountId) {
         toggle.classList.toggle('fa-angle-down');
       }
 
+      function openCompose() {
+        let inbox= document.getElementById('inbox');
+        let main= document.querySelector('main');
+        let editor= document.getElementById('email-reply-container');
+        let replyMenu= document.getElementById('reply-menu');
+        let emailContentContainer= document.getElementById('email-content-container');
+        inbox.classList.remove('closed');
+        inbox.classList.add('open');
+        main.classList.remove('closed');
+        main.classList.add('open');
+        editor.classList.remove('hidden');
+        editor.style.display='block';
+        replyMenu.classList.add('hidden');
+        emailContentContainer.classList.add('hidden');
+
+      }
+
+      function sendEmail() {
+        // Get the values from the input fields
+        const from = document.getElementById('fromInput').value;
+        const to = document.getElementById('toInput').value;
+        const cc = document.getElementById('cc').value;
+        const bcc = document.getElementById('bcc').value;
+        const subject = document.getElementById('subject').value;
+        const content = editorInstance.getData();
+      
+        // Perform any necessary validations on the input values
+      
+        // Create an object or perform AJAX request to send the email
+        const emailData = {
+          from: from,
+          to: to,
+          cc: cc,
+          bcc: bcc,
+          subject: subject,
+          content: content
+        };
+      
+        // Replace this with your logic to send the email
+        // For example, you can make an AJAX request to a server-side endpoint
+        // to handle the email sending process
+        console.log("Sending email...", emailData);
+        
+        // Reset the input fields and editor content after sending the email
+        document.getElementById('fromInput').value = '';
+        document.getElementById('toInput').value = '';
+        document.getElementById('cc').value = '';
+        document.getElementById('bcc').value = '';
+        document.getElementById('subject').value = '';
+        editorInstance.setData('');
+      }
+      
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
       
@@ -339,7 +397,7 @@ function updateInbox(accountId) {
     let replyAllButton = document.getElementById('replyAllButton');
     let forwardButton = document.getElementById('forwardButton');
     let emailReplyContainer = document.getElementById('email-reply-container');
-    let editorInstance = null;
+    // let editorInstance = null;
 
     function showEditor() {
       emailReplyContainer.classList.remove('hidden');

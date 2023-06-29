@@ -118,9 +118,11 @@ label {
 
 #composeButton {
     height: 50px;
-    border-radius: 5px;
+    border-radius: 12px;
+    border: #686565;
     text-align: left;
     font-size: 17px;
+    opacity: 0.9;
 }
 
 .hidden {
@@ -302,7 +304,7 @@ label {
 main {
     flex-basis: 600px;
     flex-grow: 2;
-    background-color: rgb(88, 175, 175);
+    background-color: white;
     text-align: center;
     overflow-x: scroll;
     overflow-y: scroll;
@@ -345,12 +347,51 @@ main.closed {
 }
 #email-reply-container {
     display: none;
+    height: 100%;
 }
 
+#email-reply-location {
+    height: 100%;
+}
+
+#editorElementId {
+    height: 500px;
+}
+
+.ck-editor__editable {
+    min-height: calc(100vh - 39px);
+}
 .hidden {
     display: none !important;
 }
 
+#sendInputs {
+    width: 100%;
+}
+
+#sendInputs>div {
+    display: flex;
+    flex-direction: row;
+    background-color: #ffffff;
+    border-bottom: #bcbbbb 1px solid;
+
+}
+
+#sendInputs label {
+    display: inline;
+    float: left;
+    margin-bottom: 0;
+    padding: 3px;
+}
+
+#sendInputs input{
+   border: none;
+   flex: 1;
+}
+
+#sendInputs select {
+    border: none;
+}
 
 /* The Close Button */
 
