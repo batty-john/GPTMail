@@ -397,7 +397,7 @@ function updateInbox(accountId) {
     let replyAllButton = document.getElementById('replyAllButton');
     let forwardButton = document.getElementById('forwardButton');
     let emailReplyContainer = document.getElementById('email-reply-container');
-    // let editorInstance = null;
+    let editorInstance = null;
 
     function showEditor() {
       emailReplyContainer.classList.remove('hidden');
