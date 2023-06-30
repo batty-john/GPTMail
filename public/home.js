@@ -376,7 +376,9 @@ function updateInbox(accountId) {
         document.getElementById('subject').value = '';
         editorInstance.setData('');
       }
-      
+
+
+
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
       

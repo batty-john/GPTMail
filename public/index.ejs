@@ -37,13 +37,16 @@
     </header>
     <div id="wrapper">
         <nav>
+            <div id="composeContainer">
+            <button id="composeButton" onclick = "openCompose()">
+                <i class="fas fa-pencil-alt"></i>Compose</button>
+            </div>
             <div class="folder-column">
-                <button id="composeButton" onclick = "openCompose()">Compose</button>
-
-                <div class="folder-item">Inbox<span class="new-email-count"></span></div>
-                <div class="folder-item">Sent</div>
-                <div class="folder-item">Drafts</div>
-                <div class="folder-item">Trash</div>
+                <div class="folder-item active"><i class="far fa-envelope-open"></i>Inbox<span class="new-email-count"></span></div>
+                <div class="folder-item"><i class="far fa-paper-plane"></i>Sent</div>
+                <div class="folder-item"><i class="far fa-note-sticky"></i>Drafts</div>
+                <div class="folder-item">
+                    <i class="far fa-trash-can"></i>Trash</div>
                 <div class="folder-header">
                     <span onclick="toggleLabelList()">
                       Labels <i class="fas fa-angle-down" id="labelToggle"></i>
@@ -125,25 +128,25 @@
                 <div id="sendInputs">
                 
                 <div>
-                    <label for="fromInput">From:</label>
+                    <label for="fromInput">From</label>
                     <select id="fromInput" >
                         <option value="9">morgan.thacker@ducimus.digital</option>
                     </select>
                   </div>
                 <div>
-                    <label for="toInput">To:</label>
+                    <label for="toInput">To</label>
                     <input type="text" id="toInput">
                   </div>
                   <div id="ccContainer" class="hidden">
-                    <label for="cc">CC:</label>
+                    <label for="cc">cc</label>
                     <input type="text" id="cc">
                   </div>
                   <div id="bccContainer" class="hidden">
-                    <label for="bcc">BCC:</label>
+                    <label for="bcc">bcc</label>
                     <input type="text" id="bcc">
                   </div>
                   <div>
-                    <label for="subject">Subject:</label>
+                    <label for="subject">Subject</label>
                     <input type="text" id="subject">
                     <button id="sendButton" onclick = "sendEmail()">Send</button>
                   </div>
