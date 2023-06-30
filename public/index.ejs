@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://kit.fontawesome.com/866758967d.js" crossorigin="anonymous"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
+   
 
 
 
@@ -28,21 +29,34 @@
     </div>
     <header>
         <div class="logo">
-        <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
+            <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
         </div>
         <form class="search-form">
             <input type="text" placeholder="Search">
         </form>
     </header>
-    <div id="wrapper">  
+    <div id="wrapper">
         <nav>
             <div class="folder-column">
-                <div class="folder-item">Inbox<span class="new-email-cout"></span></div>
+                <button id="composeButton" onclick = "openCompose()">Compose</button>
+
+                <div class="folder-item">Inbox<span class="new-email-count"></span></div>
                 <div class="folder-item">Sent</div>
                 <div class="folder-item">Drafts</div>
                 <div class="folder-item">Trash</div>
+                <div class="folder-header">
+                    <span onclick="toggleLabelList()">
+                      Labels <i class="fas fa-angle-down" id="labelToggle"></i>
+                    </span>
+                    <i class="far fa-plus btn folder-btn" onclick = "addLabelpopup()"></i> 
+        
+                <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
+                    <div id="labelsList" class="hidden">
+                        
+                    </div>
+                </div>
             </div>
-            
+
         </nav>
         <div id="inbox" class="closed">
             <div class="inbox-open-email" id="inbox-emails">
@@ -94,19 +108,53 @@
 
         </div>
         <main class="closed">
-            <div class="reply-menu">
-                <i class="fas fa-reply btn"></i>
-                <i class="fas fa-reply-all btn"></i>
-                <i class="fas fa-share btn"></i>
+            <div class="reply-menu" id="reply-menu">
+                <i class="fas fa-reply btn" id="replyButton"></i>
+                <i class="fas fa-reply-all btn" id="replyAllButton"></i>
+                <i class="fas fa-share btn" id="forwardButton"></i>
                 <i class="fas fa-trash btn"></i>
                 <button id="close" onclick="closeEmail()"><i class="fa-solid fa-xmark"></i></button>
             </div>
+
             <div id="close-email-view">
             </div>
             <div id="email-content-container">
                 <p>This is the content container</p>
             </div>
-            <div id="email-reply-container"></div>
+            <div id="email-reply-container" class="hidden">
+                <div id="sendInputs">
+                
+                <div>
+                    <label for="fromInput">From:</label>
+                    <select id="fromInput" >
+                        <option value="9">morgan.thacker@ducimus.digital</option>
+                    </select>
+                  </div>
+                <div>
+                    <label for="toInput">To:</label>
+                    <input type="text" id="toInput">
+                  </div>
+                  <div id="ccContainer" class="hidden">
+                    <label for="cc">CC:</label>
+                    <input type="text" id="cc">
+                  </div>
+                  <div id="bccContainer" class="hidden">
+                    <label for="bcc">BCC:</label>
+                    <input type="text" id="bcc">
+                  </div>
+                  <div>
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject">
+                    <button id="sendButton" onclick = "sendEmail()">Send</button>
+                  </div>
+                  
+                </div>
+                <div id="email-reply-location">
+                    <textarea id="editorElementId"></textarea>
+                    
+                </div>
+                
+            </div>
         </main>
 
         <div id="accounts">
@@ -141,6 +189,9 @@
 
     </div>
 
+
+    <div id="popupContainer"></div>
+    
     <script src="home.js"></script>
 
 </body>
