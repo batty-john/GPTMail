@@ -29,7 +29,7 @@
     </div>
     <header>
         <div class="logo">
-            <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
+            <a href="#"><img id="mainLogo" src="/images/Envelope.png" alt="Logo"></a>
         </div>
         <form class="search-form">
             <input type="text" placeholder="Search">
@@ -109,8 +109,8 @@
         </div>
         <main class="closed">
             <div class="reply-menu" id="reply-menu">
-                <i class="fas fa-reply btn" id="replyButton"></i>
-                <i class="fas fa-reply-all btn" id="replyAllButton"></i>
+                <i class="fas fa-reply btn" id="replyButton" onclick="openReply()"></i>
+                <i class="fas fa-reply-all btn" id="replyAllButton" onclick= "openReply()"></i>
                 <i class="fas fa-share btn" id="forwardButton"></i>
                 <i class="fas fa-trash btn" id="reply-menu-trash" onclick="deleteSingle(this.dataset.accountId, this.dataset.uid)"></i>
                 <button id="close" onclick="closeEmail()"><i class="fa-solid fa-xmark"></i></button>

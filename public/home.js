@@ -365,6 +365,7 @@ function updateInbox(accountId) {
         editorInstance.setData('');
       }
 
+      
 
 
       document.addEventListener('DOMContentLoaded', (event) => {

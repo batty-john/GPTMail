@@ -130,14 +130,44 @@ function updateInbox(accountId) {
         // Don't clear the inbox - we will be adding to it
         for (let email of emails) {
           console.log(email);
-          let emailHTML = `
-          <div class="email-container" id= "emailContainer${email.UID}" onclick = "displayEmail(${email.UID}, ${accountId})">
-            <div class="popup-menu">
-              <i class="far fa-trash-can btn" onclick = "deleteSingle(${accountId},${email.UID})"></i>
-              <i class="far fa-folder btn"></i>
-              <i class="far fa-flag btn"></i>
-              <i class="far fa-star btn"></i>
-            </div>
+          let emailDiv = document.createElement("div");
+          inboxEmailsDiv.appendChild (emailDiv);
+          emailDiv.classList.add("email-container");
+          emailDiv.setAttribute("id", `emailContainer${email.UID}`);
+          let popupMenu = document.createElement("div");
+          popupMenu.classList.add("popup-menu");
+          let trashButton = document.createElement("button");
+          trashButton.classList.add("btn");
+          trashButton.innerHTML = "<i class='far fa-trash-can'></i>";
+
+         
+          let folderButton = document.createElement("i");
+          folderButton.classList.add("far");
+          folderButton.classList.add("fa-folder");
+          folderButton.classList.add("btn");
+          let flagButton = document.createElement("i");
+          flagButton.classList.add("far");
+          flagButton.classList.add("fa-flag");
+          flagButton.classList.add("btn");
+          let starButton = document.createElement("i");
+          starButton.classList.add("far");
+          starButton.classList.add("fa-star");
+          starButton.classList.add("btn");
+
+          // emailDiv.addEventListener("click", function(){
+          //   event.preventDefault();
+          //   console.log("email clicked");
+          //   displayEmail(accountId, email.UID)
+          // });
+
+          popupMenu.appendChild(trashButton);
+          popupMenu.appendChild(folderButton);
+          popupMenu.appendChild(flagButton);
+          popupMenu.appendChild(starButton);
+          emailDiv.appendChild(popupMenu);
+
+          emailDiv.innerHTML += `
+          
             <div class="sender-line">
               <h3><strong>${email.sender}</strong></h3>
               <p class="inbox-open-email-time">12:26</p>
@@ -151,9 +181,16 @@ function updateInbox(accountId) {
 
             <div class="email-border">
             </div>
-        </div>
+        
           `;
-          inboxEmailsDiv.innerHTML += emailHTML;
+          
+          trashButton.addEventListener("click", function(event) {
+            event.stopPropagation();
+            deleteSingle(accountId, email.UID);
+            console.log("Trash button clicked");
+          });
+          
+          
         }
       })
       .catch(error => {
@@ -162,7 +199,7 @@ function updateInbox(accountId) {
   }
       
 
-      function displayEmail(uid, accountId) {
+      function displayEmail(accountId, uid) {
         let mainDiv = document.querySelector('main');
         let inboxDiv = document.getElementById('inbox');
         let contentDiv = document.getElementById('email-content-container');
@@ -216,7 +253,7 @@ function updateInbox(accountId) {
       // } 
 
       async function deleteSingle(accountId, uid) {
-        event.preventDefault();
+        
       
         fetch(`deleteEmail/${accountId}/${uid}`)
         .then(response => response.json())
@@ -337,6 +374,40 @@ function updateInbox(accountId) {
         emailContentContainer.classList.add('hidden');
 
       }
+
+      function openReply() {
+        let inbox = document.getElementById('inbox');
+        let main = document.querySelector('main');
+        let editor = document.getElementById('email-reply-container');
+        let replyMenu = document.getElementById('reply-menu');
+        let emailContentContainer = document.getElementById('email-content-container');
+        let fromInput = document.getElementById('fromInput');
+        let toInput = document.getElementById('toInput');
+        let subjectInput = document.getElementById('subject');
+        let editorElement = document.getElementById('editorElementId');
+        
+        // Get the email details from the original email view
+        let originalFrom = document.getElementById('originalFrom').innerText;
+        let originalTo = document.getElementById('originalTo').innerText;
+        let originalSubject = document.getElementById('originalSubject').innerText;
+        let originalContent = document.getElementById('originalContent').innerText;
+      
+        // Populate the fields in the reply form
+        fromInput.value = originalFrom;
+        toInput.value = originalTo;
+        subjectInput.value = `Re: ${originalSubject}`;
+        editorElement.innerHTML = `\n\n\n-------- Original Message --------\nFrom: ${originalFrom}\nTo: ${originalTo}\nSubject: ${originalSubject}\n\n${originalContent}`;
+      
+        inbox.classList.remove('closed');
+        inbox.classList.add('open');
+        main.classList.remove('closed');
+        main.classList.add('open');
+        editor.classList.remove('hidden');
+        editor.style.display = 'block';
+        replyMenu.classList.add('hidden');
+        emailContentContainer.classList.add('hidden');
+      }
+
 
       function sendEmail() {
         // Get the values from the input fields

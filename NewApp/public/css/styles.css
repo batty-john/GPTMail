@@ -3,7 +3,7 @@
 }
 
 body {
-    background-image: url("NewApp/public/images/summer.jpg");
+    background-image: url("/images/summer.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     color: #080808;
@@ -383,6 +383,9 @@ main.closed {
 
 }
 
+.reply-menu :hover {
+    color: #888;
+}
 #email-content-container {
     flex-grow: 1;
     min-height: calc(100vh - 70px);
@@ -455,7 +458,7 @@ main.closed {
 
 #close:hover,
 #close:focus {
-    color: yellowgreen;
+    color: rgb(154, 155, 153);
     text-decoration: none;
     cursor: pointer;
 }
