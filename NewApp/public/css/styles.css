@@ -1,0 +1,488 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #494948;
+    color: #080808;
+    font-family: Tahoma, Arial, Sans-serif;
+    margin: 0;
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: row;
+    background-color: #fcfafa;
+    padding: 0;
+    height: 100vh;
+}
+
+header {
+    background-color: #0a0a0a;
+    height: 70px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+#mainLogo {
+    height: 70px;
+    padding-top: 1em;
+    padding-left: 3em;
+    padding-bottom: 1em;
+}
+
+/* Search bar */
+
+.search-form {
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.5em;
+    padding-left: 6em;
+    width: 45%;
+    min-height: 70px;
+    margin-right: auto;
+    border-radius: 5px;
+    opacity: .6;
+}
+
+h3 {
+    padding-left: 1em;
+}
+
+h4 {
+    font-family: Tahoma, Arial, Sans-serif;
+}
+
+
+/* Navigation */
+
+.folder-column {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    background-color: #fcfafa;
+    padding: 15px;
+}
+
+/* CSS for each folder item */
+.folder-item {
+    padding: 15px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* CSS for the selected folder */
+.folder-item:hover {
+    background-color: #e0e0e0;
+    border-radius: 7px;
+}
+
+.folder-header {
+    font-size: 20px;
+    font-weight: 530;
+    /* word-spacing: 70px; */
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#labelsList {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 14px;
+    position: relative;
+    /* padding-top: 1em; */
+}
+
+.label-list-item {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.label-color-icon {
+    
+    width: .8em;
+    height: .8em;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+#composeButton {
+    height: 50px;
+    border-radius: 12px;
+    border: #686565;
+    text-align: left;
+    font-size: 17px;
+    opacity: 0.9;
+}
+
+.hidden {
+    display: none;
+}
+
+ nav {
+    text-align: left;
+    font-size: 1em;
+    flex-basis: 150px;
+}
+
+/* Inbox List */
+
+#inbox {
+    flex-basis: 300px;
+    flex-grow: 1.5;
+    background-color: rgb(252, 200, 209);
+}
+
+#inbox.open {
+    max-width: 375px;
+}
+
+#inbox ul {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    padding-top: 1em;
+    margin: 0;
+    font-size: 1em;
+}
+
+#inbox li {
+    padding: 1em 1em;
+    width: 100%;
+}
+
+#inbox li a {
+    display: flex;
+    flex-direction: column;
+    padding: 1em 1em;
+}
+
+/* #inbox-emails {} */
+
+
+
+/* Email list contents */
+
+.sender-line {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    font-weight: bold;
+    justify-content: space-between;
+    flex-direction: row;
+    /* height: 25px; */
+}
+
+.inbox-open-email-time {
+    text-align: right;
+    align-self: right;
+    padding-right: 1em;
+    padding-top: .75em;
+    margin-top: 0;
+    max-width: 100px; 
+}
+
+.subject-line {
+    display: flex;
+    align-items: center;
+    /* flex-direction: row; */
+    padding-left: 1em;
+    width: 95%;
+}
+
+.subject-line p {
+    margin: 0;
+    padding-top: 0.5em;
+    font-size: 14px;
+    color: #333;
+    /* display: flex;
+    flex-direction: row;
+    padding-top: .5em;
+    margin: 0; */
+}
+
+.sender-line h3 {
+    font-size: 16px;
+    margin: 0;
+}
+
+.teaser-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 1em;
+    /* justify-content: space-between;
+    flex-direction: row;
+    padding-left: 1em; */
+}
+
+.teaser-line p {
+    font-size: 13px;
+    color: #777;
+}
+
+.email-border {
+    border-bottom: 1px solid #ccc;
+}
+
+.sender-line,
+.subject-line,
+.teaser-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.inbox-open-email {
+    max-width: 100%;
+    max-height: 90vh;
+    overflow: auto;
+    /* overflow-x: hidden;
+    overflow-y: scroll; */
+}
+
+/* Menu on Email list */
+
+.popup-menu {
+    position: absolute;
+    top: 35%;
+    right: 15px;
+    padding: .5em;
+    visibility: hidden;
+    background-color: rgb(194, 191, 191);
+    border-radius: 7px;
+}
+
+.btn:hover {
+    color: yellowgreen;
+}
+
+.folder-btn {
+    background-color: #e1e1e1;
+    border-radius: 50%;
+    padding: 3px;
+    float: right;
+}
+
+.folder-btn:hover {
+    background-color: #777;
+    color: #e1e1e1;
+
+}
+
+
+
+
+.email-container {
+    position: relative;
+}
+
+.email-container:hover {
+    background-color: #ebd1d1
+}
+
+.email-container .popup-menu {
+    visibility: hidden;
+}
+
+.email-container:hover .popup-menu {
+    visibility: visible;
+}
+
+/* Main Email View */
+
+main {
+    flex-basis: 600px;
+    flex-grow: 2;
+    background-color: white;
+    text-align: center;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+main.closed {
+    display: none;
+}
+
+#close-email-view {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background-color: transparent;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.reply-menu {
+    font-size: 30px;
+    display: flex;
+    justify-content: right;
+    padding-right: 90px;
+    gap: 30px;
+    top: 15px;
+    right: 25px;
+    visibility: visible;
+    min-height: 70px;
+    padding-top: 32px;
+
+}
+
+#email-content-container {
+    flex-grow: 1;
+    min-height: calc(100vh - 70px);
+
+}
+#email-reply-container {
+    display: none;
+    height: 100%;
+}
+
+#email-reply-location {
+    height: 100%;
+}
+
+#editorElementId {
+    height: 500px;
+}
+
+.ck-editor__editable {
+    min-height: calc(100vh - 39px);
+}
+.hidden {
+    display: none !important;
+}
+
+#sendInputs {
+    width: 100%;
+}
+
+#sendInputs>div {
+    display: flex;
+    flex-direction: row;
+    background-color: #ffffff;
+    border-bottom: #bcbbbb 1px solid;
+
+}
+
+#sendInputs label {
+    display: inline;
+    float: left;
+    margin-bottom: 0;
+    padding: 3px;
+}
+
+#sendInputs input{
+   border: none;
+   flex: 1;
+}
+
+#sendInputs select {
+    border: none;
+}
+
+/* The Close Button */
+
+#close {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding-left: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 35px;
+}
+
+#close:hover,
+#close:focus {
+    color: yellowgreen;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Accounts */
+
+#accounts {
+    flex-basis: 60px;
+    flex-grow: 0;
+}
+
+.circle-account-name {
+    border-radius: 50%;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    height: 50px;
+    width: 50px;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+}
+
+/*  Add Label Popup*/
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
+

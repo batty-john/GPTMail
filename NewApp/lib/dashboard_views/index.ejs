@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> GPT MAIL</title>
+    <meta name="description" content="GPT Mail">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ms+Madi&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="shortcut icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://kit.fontawesome.com/866758967d.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
+   
+
+
+
+</head>
+
+<body>
+    <div id="notice-bar">
+        <p id="message"></p>
+    </div>
+    <header>
+        <div class="logo">
+            <a href="#"><img id="mainLogo" src="images/Envelope.png" alt="Logo"></a>
+        </div>
+        <form class="search-form">
+            <input type="text" placeholder="Search">
+        </form>
+    </header>
+    <div id="wrapper">
+        <nav>
+            <div class="folder-column">
+                <button id="composeButton" onclick = "openCompose()">Compose</button>
+
+                <div class="folder-item">Inbox<span class="new-email-count"></span></div>
+                <div class="folder-item">Sent</div>
+                <div class="folder-item">Drafts</div>
+                <div class="folder-item">Trash</div>
+                <div class="folder-header">
+                    <span onclick="toggleLabelList()">
+                      Labels <i class="fas fa-angle-down" id="labelToggle"></i>
+                    </span>
+                    <i class="far fa-plus btn folder-btn" onclick = "addLabelpopup()"></i> 
+        
+                <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
+                    <div id="labelsList" class="hidden">
+                        
+                    </div>
+                </div>
+            </div>
+
+        </nav>
+        <div id="inbox" class="closed">
+            <div class="inbox-open-email" id="inbox-emails">
+                <div class="email-container">
+                    <div class="popup-menu">
+                        <i class="far fa-trash-can btn"></i>
+                        <i class="far fa-folder btn"></i>
+                        <i class="far fa-flag btn"></i>
+                        <i class="far fa-star btn"></i>
+                    </div>
+                    <div class="sender-line">
+                        <h3><strong>Sender Name</strong></h3>
+                        <p class="inbox-open-email-time">10:31</p>
+                    </div>
+                    <div class="subject-line">
+                        <p>Subject Line</p>
+                    </div>
+                    <div class="teaser-line">
+                        <p>Teaser Line</p>
+                    </div>
+
+                    <div class="email-border">
+                    </div>
+                </div>
+
+                <div class="email-container">
+                    <div class="popup-menu">
+                        <i class="far fa-trash-can btn"></i>
+                        <i class="far fa-folder btn"></i>
+                        <i class="far fa-flag btn"></i>
+                        <i class="far fa-star btn"></i>
+                    </div>
+                    <div class="sender-line">
+                        <h3><strong>John Batty</strong></h3>
+                        <p class="inbox-open-email-time">12:26</p>
+                    </div>
+                    <div class="subject-line">
+                        <p>Subject Line</p>
+                    </div>
+                    <div class="teaser-line">
+                        <p>Teaser Line</p>
+                    </div>
+
+                    <div class="email-border">
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <main class="closed">
+            <div class="reply-menu" id="reply-menu">
+                <i class="fas fa-reply btn" id="replyButton"></i>
+                <i class="fas fa-reply-all btn" id="replyAllButton"></i>
+                <i class="fas fa-share btn" id="forwardButton"></i>
+                <i class="fas fa-trash btn" id="reply-menu-trash" onclick="deleteSingle(this.dataset.accountId, this.dataset.uid)"></i>
+                <button id="close" onclick="closeEmail()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="close-email-view">
+            </div>
+            <div id="email-content-container">
+                <p>This is the content container</p>
+            </div>
+            <div id="email-reply-container" class="hidden">
+                <div id="sendInputs">
+                
+                <div>
+                    <label for="fromInput">From:</label>
+                    <select id="fromInput" >
+                        <option value="9">morgan.thacker@ducimus.digital</option>
+                    </select>
+                  </div>
+                <div>
+                    <label for="toInput">To:</label>
+                    <input type="text" id="toInput">
+                  </div>
+                  <div id="ccContainer" class="hidden">
+                    <label for="cc">CC:</label>
+                    <input type="text" id="cc">
+                  </div>
+                  <div id="bccContainer" class="hidden">
+                    <label for="bcc">BCC:</label>
+                    <input type="text" id="bcc">
+                  </div>
+                  <div>
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject">
+                    <button id="sendButton" onclick = "sendEmail()">Send</button>
+                  </div>
+                  
+                </div>
+                <div id="email-reply-location">
+                    <textarea id="editorElementId"></textarea>
+                    
+                </div>
+                
+            </div>
+        </main>
+
+        <div id="accounts">
+            <div id="allAccounts"></div>
+            <div class="circle-account-name" id="addAccountButton">+</div>
+
+        </div>
+
+
+        <div id="addAccountModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>Add an Account</p>
+                <form id="addAccountForm">
+                    <label for="email">Email:</label><br>
+                    <input type="email" id="email" name="email" required><br>
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required><br>
+                    <label for="server">IMAP/POP3 Server:</label><br>
+                    <input type="text" id="server" name="server" required><br>
+                    <label for="port">Port:</label><br>
+                    <input type="number" id="port" name="port" required><br>
+                    <label for="protocol">Protocol:</label><br>
+                    <select id="protocol" name="protocol" required>
+                        <option value="IMAP">IMAP</option>
+                        <option value="POP3">POP3</option>
+                    </select><br>
+                    <input type="submit" value="Add">
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="popupContainer"></div>
+    
+    <script src="/JavaScript/home.js"></script>
+
+</body>

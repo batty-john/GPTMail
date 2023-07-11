@@ -1,4 +1,3 @@
-const e = require("express");
 
 
 // Get the modal
@@ -19,6 +18,9 @@ btn.onclick = function() {
 span.onclick = function() {
   modal.style.display = "none";
 }
+
+var editorInstance = null;  // declare editorInstance at the top of your script
+
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
@@ -74,7 +76,7 @@ const form = document.getElementById('addAccountForm');
 
     function updateAccounts() {
         console.log("inFunction");
-        fetch('/accounts')
+        fetch('/getAccounts')
             .then(response => response.json())
             .then(accounts => {
                 console.log("response recieved");
@@ -118,7 +120,7 @@ const form = document.getElementById('addAccountForm');
 
 // New function to fetch recent mails and update the inbox
 function updateInbox(accountId) {
-    let url = `/getUserMail/${accountId}`;
+    let url = `/getEmails/${accountId}`;
     
   
     fetch(url)
@@ -164,6 +166,11 @@ function updateInbox(accountId) {
         let mainDiv = document.querySelector('main');
         let inboxDiv = document.getElementById('inbox');
         let contentDiv = document.getElementById('email-content-container');
+        let trashButton = document.getElementById('reply-menu-trash');
+
+        trashButton.dataset.uid = uid;
+        trashButton.dataset.accountId = accountId;
+        
         
         // Add 'open' class to the main and inbox divs
         mainDiv.classList.add('open');
@@ -210,17 +217,17 @@ function updateInbox(accountId) {
 
       async function deleteSingle(accountId, uid) {
       
-      fetch(`deleteEmail/`)
-      .then(response => response.json())
-      .then(response => {console.log(response);})
+        fetch(`deleteEmail/${accountId}/${uid}`)
+        .then(response => response.json())
+        .then(response => {console.log(response);})
 
-      closeEmail();
-
-      }
+        closeEmail();
+  
+        }
       
         function getLabelList(){
 
-          fetch('/getLabelList')
+          fetch('/getLabels')
           .then(response => response.json())
           .then(labels => {
             console.log("response recieved-getlabellist");
@@ -362,11 +369,26 @@ function updateInbox(accountId) {
         document.getElementById('cc').value = '';
         document.getElementById('bcc').value = '';
         document.getElementById('subject').value = '';
-        editorInstance.setData('');
+        document.getElementById('editorElementId').value = '';
+
+       
+        clearEditor();
+
+        console.log(ClassicEditor.instances);
+        for (instance in ClassicEditor.instances) {
+          ClassicEditor.instances[instance].updateElement();
+          ClassicEditor.instances[instance].setData('');
+        }
+        
       }
 
-
-
+      function clearEditor() {
+        if (editorInstance) {
+            editorInstance.setData('');
+        }
+    }
+    
+      
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();
       
@@ -374,8 +396,9 @@ function updateInbox(accountId) {
 
         // CKEditor
         ClassicEditor
-        .create(document.querySelector("#email-reply-location"))
+        .create(document.getElementById('editorElementId'))
         .then(editor => {
+          editorInstance = editor;
           console.log("CKEditor initialized");
         })
         .catch(error => {
@@ -387,7 +410,6 @@ function updateInbox(accountId) {
     let replyAllButton = document.getElementById('replyAllButton');
     let forwardButton = document.getElementById('forwardButton');
     let emailReplyContainer = document.getElementById('email-reply-container');
-    let editorInstance = null;
 
     function showEditor() {
       emailReplyContainer.classList.remove('hidden');
