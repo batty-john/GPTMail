@@ -3,33 +3,38 @@
 }
 
 body {
-    background-color: #494948;
+    background-image: url("NewApp/public/images/summer.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
     color: #080808;
     font-family: Tahoma, Arial, Sans-serif;
     margin: 0;
+    height: 100vh;
+    padding: 0;
+    overflow: hidden;
 }
 
 #wrapper {
     display: flex;
     flex-direction: row;
-    background-color: #fcfafa;
     padding: 0;
-    height: 100vh;
+    height: 90vh;
+    opacity: 0.6;
 }
 
 header {
-    background-color: #0a0a0a;
-    height: 70px;
+    /* background-color: #0a0a0a; */
+    height: 65px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0;
 }
 
 #mainLogo {
     height: 70px;
-    padding-top: 1em;
+    /* padding-top: 1em; */
     padding-left: 3em;
     padding-bottom: 1em;
 }
@@ -50,45 +55,64 @@ header {
 
 h3 {
     padding-left: 1em;
+    
 }
 
 h4 {
     font-family: Tahoma, Arial, Sans-serif;
 }
 
-
+p {
+    color: #000;
+}
 /* Navigation */
 
 .folder-column {
     display: flex;
     flex-direction: column;
     width: 200px;
-    background-color: #fcfafa;
     padding: 15px;
 }
 
 /* CSS for each folder item */
 .folder-item {
-    padding: 15px;
+    padding: 5px;
     font-size: 18px;
     cursor: pointer;
 }
-
 /* CSS for the selected folder */
+.folder-item.active {
+    background-color: #e0e0e0;
+    border-radius: 7px;
+}
+
+
 .folder-item:hover {
     background-color: #e0e0e0;
     border-radius: 7px;
 }
 
+.folder-item i {
+    margin-right: 5px;
+    font-size: 18px;
+    padding-left: 7px;
+}
 .folder-header {
+    padding-left: 5px;
+    padding-top: 20px;
     font-size: 20px;
     font-weight: 530;
     /* word-spacing: 70px; */
 }
 
+.folder-header i:hover {
+    color: #fefefe;
+}
+
 label {
     display: block;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 #labelsList {
@@ -116,20 +140,34 @@ label {
     margin-right: 5px;
 }
 
+#composeContainer {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    padding: 10px;
+
+}
+
 #composeButton {
     height: 50px;
     border-radius: 12px;
     border: #686565;
     text-align: left;
-    font-size: 17px;
-    opacity: 0.9;
+    font-size: 15px;
+    /* opacity: 0.9; */
+}
+
+#composeButton i {
+    margin-right: 5px;
+    font-size: 18px;
+    padding-left: 7px;
 }
 
 .hidden {
     display: none;
 }
 
- nav {
+nav {
     text-align: left;
     font-size: 1em;
     flex-basis: 150px;
@@ -140,7 +178,10 @@ label {
 #inbox {
     flex-basis: 300px;
     flex-grow: 1.5;
-    background-color: rgb(252, 200, 209);
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow-y: scroll;
+    max-height: 85vh;
 }
 
 #inbox.open {
@@ -190,25 +231,22 @@ label {
     padding-top: .75em;
     margin-top: 0;
     max-width: 100px; 
+    color: #000;
 }
 
 .subject-line {
     display: flex;
     align-items: center;
-    /* flex-direction: row; */
     padding-left: 1em;
     width: 95%;
+    color: #000;
 }
 
 .subject-line p {
     margin: 0;
     padding-top: 0.5em;
     font-size: 14px;
-    color: #333;
-    /* display: flex;
-    flex-direction: row;
-    padding-top: .5em;
-    margin: 0; */
+    color: #000;
 }
 
 .sender-line h3 {
@@ -221,9 +259,6 @@ label {
     align-items: center;
     justify-content: space-between;
     padding-left: 1em;
-    /* justify-content: space-between;
-    flex-direction: row;
-    padding-left: 1em; */
 }
 
 .teaser-line p {
@@ -232,7 +267,7 @@ label {
 }
 
 .email-border {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ffffff;
 }
 
 .sender-line,
@@ -245,10 +280,8 @@ label {
 
 .inbox-open-email {
     max-width: 100%;
-    max-height: 90vh;
-    overflow: auto;
-    /* overflow-x: hidden;
-    overflow-y: scroll; */
+    /* max-height: 100vh;
+    overflow: auto; */
 }
 
 /* Menu on Email list */
@@ -264,7 +297,7 @@ label {
 }
 
 .btn:hover {
-    color: yellowgreen;
+    color: rgb(253, 253, 252);
 }
 
 .folder-btn {
@@ -306,9 +339,19 @@ main {
     flex-grow: 2;
     background-color: white;
     text-align: center;
-    overflow-x: scroll;
-    overflow-y: scroll;
+    
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 7px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
 
 main.closed {
     display: none;
@@ -373,7 +416,7 @@ main.closed {
     display: flex;
     flex-direction: row;
     background-color: #ffffff;
-    border-bottom: #bcbbbb 1px solid;
+    border-bottom: #d1cfcf 1px solid;
 
 }
 
@@ -393,6 +436,9 @@ main.closed {
     border: none;
 }
 
+
+
+ 
 /* The Close Button */
 
 #close {
@@ -423,11 +469,11 @@ main.closed {
 
 .circle-account-name {
     border-radius: 50%;
-    background-color: red;
+    background-color: #777;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    color: #ffffff;
     font-size: 16px;
     font-weight: bold;
     height: 50px;

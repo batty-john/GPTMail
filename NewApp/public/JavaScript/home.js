@@ -216,6 +216,7 @@ function updateInbox(accountId) {
       // } 
 
       async function deleteSingle(accountId, uid) {
+        event.preventDefault();
       
         fetch(`deleteEmail/${accountId}/${uid}`)
         .then(response => response.json())
