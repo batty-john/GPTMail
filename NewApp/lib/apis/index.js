@@ -102,8 +102,27 @@ app.get('/getFolderEmails/:accountId/:folderId', async (req, res) => {
  * 
  *******************************************/
   app.get('/deleteEmail/:accountId/:uid', async (req, res) => {
-    
+
+    const accountId = req.params.accountId;
+    const uid = req.params.uid;
+  
     // Check if the user is logged in and the accountId belongs to them
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).send('Not logged in');
+    }
+
+    const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+    const account = accounts[0]
+    if (account.user_id !== userId) {
+      return res.status(403).send('Not authorized to access this account');
+    }
+    
+    // Delete the email
+    let trashFolderID = await db.query('SELECT id FROM folders WHERE account_id = ? AND name = ?', [accountId, 'Trash']);
+    trashFolderID = trashFolderID[0][0].id;
+
+    await db.query('UPDATE emails SET folder_id = ? WHERE account_id = ? AND uid = ?', [trashFolderID, accountId, uid]);
 
     res.json(`Deleted email ${req.params.uid}`);
   
