@@ -75,7 +75,25 @@ app.get('/getEmail/:accountId/:uid', async (req, res) => {
  *******************************************/
 app.get('/getFolderEmails/:accountId/:folderId', async (req, res) => { 
 
-  res.send(`getting emails for folder ${req.params.folderId}`);
+  const accountId = req.params.accountId;
+  const folderId = req.params.folderId;
+  
+  // Check if the user is logged in and the accountId belongs to them
+  const userId = req.session.userId;
+  if (!userId) {
+    return res.status(401).send('Not logged in');
+  }
+
+  const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+  const account = accounts[0]
+  if (account.user_id !== userId) {
+    return res.status(403).send('Not authorized to access this account');
+  }
+
+  // Fetch the emails
+  let [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id = ?', [accountId, folderId]);
+
+  res.json(emails);
 });
 
   /*********************************************
