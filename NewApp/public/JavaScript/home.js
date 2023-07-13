@@ -108,6 +108,7 @@ const form = document.getElementById('addAccountForm');
                 // Call the function to get recent mails and display them
                 if (accountsCount > 0) {
                     updateInbox(accounts[0].id); // Fetch emails for the first account by default
+                    setAccount(accounts[0].id);
                 }
     
             })
@@ -116,18 +117,35 @@ const form = document.getElementById('addAccountForm');
             });
     }
     
-
+    function setAccount(accountId) {
+      console.log("in set account");
+      let sentFolderButton = document.getElementById('sentFolderButton');
+      sentFolderButton.dataset.accountId = accountId;
+      let draftsFolderButton = document.getElementById('draftsFolderButton');
+      draftsFolderButton.dataset.accountId = accountId;
+      let trashFolderButton = document.getElementById('trashFolderButton');
+      trashFolderButton.dataset.accountId = accountId;
+    }
 
 // New function to fetch recent mails and update the inbox
-function updateInbox(accountId) {
-    let url = `/getEmails/${accountId}`;
-    
+function updateInbox(accountId, folderId = 0) {
+
+  if (folderId == 0) {
+    var url = `/getEmails/${accountId}`;
   
+  }
+  else {
+    var url = `/getFolderEmails/${accountId}/${folderId}`
+  }
+   console.log(`folderId:${folderId}`)
+    
     fetch(url)
       .then(response => response.json())
       .then(emails => {
         let inboxEmailsDiv = document.getElementById('inbox-emails');
-        // Don't clear the inbox - we will be adding to it
+        
+        inboxEmailsDiv.innerHTML = "";
+
         for (let email of emails) {
           console.log(email);
           let emailDiv = document.createElement("div");
@@ -136,15 +154,18 @@ function updateInbox(accountId) {
           emailDiv.setAttribute("id", `emailContainer${email.UID}`);
           let popupMenu = document.createElement("div");
           popupMenu.classList.add("popup-menu");
-          let trashButton = document.createElement("button");
-          trashButton.classList.add("btn");
-          trashButton.innerHTML = "<i class='far fa-trash-can'></i>";
 
-         
+          let trashButton = document.createElement("i");
+          trashButton.setAttribute("id", `trashButton${email.UID}`);
+          trashButton.classList.add("far");
+          trashButton.classList.add("fa-trash-can");
+          trashButton.classList.add("btn");
+          
           let folderButton = document.createElement("i");
           folderButton.classList.add("far");
           folderButton.classList.add("fa-folder");
           folderButton.classList.add("btn");
+
           let flagButton = document.createElement("i");
           flagButton.classList.add("far");
           flagButton.classList.add("fa-flag");
@@ -154,11 +175,11 @@ function updateInbox(accountId) {
           starButton.classList.add("fa-star");
           starButton.classList.add("btn");
 
-          // emailDiv.addEventListener("click", function(){
-          //   event.preventDefault();
-          //   console.log("email clicked");
-          //   displayEmail(accountId, email.UID)
-          // });
+          emailDiv.addEventListener("click", function(){
+            event.preventDefault();
+            console.log("email clicked");
+            displayEmail(accountId, email.UID)
+          });
 
           popupMenu.appendChild(trashButton);
           popupMenu.appendChild(folderButton);
@@ -184,10 +205,11 @@ function updateInbox(accountId) {
         
           `;
           
-          trashButton.addEventListener("click", function(event) {
+          document.getElementById(`trashButton${email.UID}`).addEventListener("click", function(event) {
+            console.log("Trash button clicked");
             event.stopPropagation();
             deleteSingle(accountId, email.UID);
-            console.log("Trash button clicked");
+            
           });
           
           
@@ -197,7 +219,7 @@ function updateInbox(accountId) {
         console.error('Error:', error);
       });
   }
-      
+
 
       function displayEmail(accountId, uid) {
         let mainDiv = document.querySelector('main');
@@ -233,24 +255,7 @@ function updateInbox(accountId) {
         inboxDiv.classList.add('closed');
       }
       
-      // function deleteSingle(accountId, uid){
-      //   const config = {
-      //     method:'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json'
-      //     },
-      //     body: {"uids": uid}
-
-      //   }
-
-      //   fetch(`deleteMail/${accountId}`, config)
-      //   .then(response => response.json())
-      //   .then(response => {console.log(response);})
-      //   .catch(err => console.error(err));
-
-      //   let email= document.getElementById('emailContainer'+ uid);
-      //   email.remove();
-      // } 
+  
 
       async function deleteSingle(accountId, uid) {
         
@@ -259,10 +264,18 @@ function updateInbox(accountId) {
         .then(response => response.json())
         .then(response => {console.log(response);})
 
-        closeEmail();
+        document.getElementById(`emailContainer${uid}`).remove();
+        
+        let openId = document.getElementById(`reply-menu-trash`).dataset.uid;
+          console.log("openId " + openId);
+        if (openId == uid) {
+          closeEmail();
+        }
   
         }
       
+       
+
         function getLabelList(){
 
           fetch('/getLabels')

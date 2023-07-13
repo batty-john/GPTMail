@@ -296,6 +296,10 @@ nav {
     border-radius: 7px;
 }
 
+.popup-menu .btn {
+    padding: 2px;
+}
+
 .btn:hover {
     color: rgb(253, 253, 252);
 }

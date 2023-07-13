@@ -73,9 +73,9 @@ app.get('/getEmail/:accountId/:uid', async (req, res) => {
  * 
  * 
  *******************************************/
-app.get('/getFolderEmails/:accountId/:uid', async (req, res) => { 
+app.get('/getFolderEmails/:accountId/:folderId', async (req, res) => { 
 
-
+  res.send(`getting emails for folder ${req.params.folderId}`);
 });
 
   /*********************************************
