@@ -119,7 +119,7 @@ app.get('/getFolderEmails/:accountId/:folderId', async (req, res) => {
     }
     
     // Delete the email
-    let trashFolderID = await db.query('SELECT id FROM folders WHERE account_id = ? AND name = ?', [accountId, 'Trash']);
+    let trashFolderID = await db.query('SELECT folderid FROM folders WHERE accountid = ? AND foldername = ?', [accountId, 'Trash']);
     trashFolderID = trashFolderID[0][0].id;
 
     await db.query('UPDATE emails SET folder_id = ? WHERE account_id = ? AND uid = ?', [trashFolderID, accountId, uid]);
