@@ -175,7 +175,7 @@ nav {
     background-color: #ffffff;
     border-radius: 12px;
     overflow-y: scroll;
-    max-height: 85vh;
+    max-height: 89vh;
 }
 
 #inbox.open {
@@ -274,8 +274,6 @@ nav {
 
 .inbox-open-email {
     max-width: 100%;
-    /* max-height: 100vh;
-    overflow: auto; */
 }
 
 /* Menu on Email list */
@@ -337,6 +335,8 @@ main {
     flex-grow: 2;
     background-color: white;
     text-align: center;
+    border-radius: 7px;
+    max-height: 89vh;
     
 }
 
