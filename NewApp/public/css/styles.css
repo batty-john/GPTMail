@@ -35,13 +35,13 @@ header {
 #mainLogo {
     height: 70px;
     /* padding-top: 1em; */
-    padding-left: 3em;
+    padding-left: 4em;
     padding-bottom: 1em;
 }
 
 /* Search bar */
 
-.search-form {
+/* .search-form {
     display: flex;
     flex-direction: column;
     padding-top: 1.5em;
@@ -51,7 +51,43 @@ header {
     margin-right: auto;
     border-radius: 5px;
     opacity: .6;
+} */
+
+.search-form {
+    display: flex;
+    align-items: center;
+    width: 45%; /* Adjust the width to your preference */
+    height: 40px; /* Adjust the height to your preference */
+    margin: 0 auto;
+    border-radius: 20px;
+    background-color: #f2f2f2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    opacity: .6;
+    
 }
+
+.search-form input[type="text"] {
+    flex: 1;
+    border: none;
+    padding: 0 10px;
+    height: 100%;
+    font-size: 14px;
+    outline: none;
+    background-color: transparent;
+}
+  
+.search-form button[type="submit"] {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+}
+  
+.search-form button[type="submit"]:hover {
+    opacity: 0.8;
+}
+
 
 h3 {
     padding-left: 1em;
