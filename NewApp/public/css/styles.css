@@ -117,7 +117,7 @@ p {
     cursor: pointer;
 }
 /* CSS for the selected folder */
-.folder-item.active {
+.folder-item:active {
     background-color: #e0e0e0;
     border-radius: 12px;
 }
