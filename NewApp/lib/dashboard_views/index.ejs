@@ -42,11 +42,23 @@
             <div class="folder-column">
                 
 
-                <div class="folder-item"><i class="far fa-envelope-open"></i>Inbox<span class="new-email-count"></span></div>
+                <div class="folder-item" id="inboxFolderButton" onclick="updateInbox(this.dataset.accountId, 'inbox')"><i class="far fa-envelope-open"></i>Inbox<span class="new-email-count"></span></div>
                 <div class="folder-item" id = "sentFolderButton" onclick="updateInbox(this.dataset.accountId, 'sent')"><i class="far fa-paper-plane"></i>Sent</div>
                 <div class="folder-item" id="draftsFolderButton" onclick="updateInbox(this.dataset.accountId, 'drafts')"><i class="far fa-note-sticky"></i>Drafts</div>
                 <div class="folder-item" id="trashFolderButton" onclick="updateInbox(this.dataset.accountId, 'trash')"><i class="far fa-trash-can"></i>Trash</div>
                 
+                <div class="folder-header">
+                    <span onclick="toggleFolderList()">
+                      Folders <i class="fas fa-angle-down" id="folderToggle"></i>
+                    </span>
+                    <i class="far fa-plus btn folder-btn" id="addFolderButton" onclick = "addFolderpopup(this.dataset.accountId)"></i> 
+        
+                <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
+                    <div id="addedFoldersList" class="hidden">
+                        
+                    </div>
+                </div>
+
                 <div class="folder-header">
                     <span onclick="toggleLabelList()">
                       Labels <i class="fas fa-angle-down" id="labelToggle"></i>

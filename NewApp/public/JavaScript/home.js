@@ -119,24 +119,26 @@ const form = document.getElementById('addAccountForm');
     
     function setAccount(accountId) {
       console.log("in set account");
+      let inboxFolderButton = document.getElementById('inboxFolderButton');
+      inboxFolderButton.dataset.accountId = accountId;
       let sentFolderButton = document.getElementById('sentFolderButton');
       sentFolderButton.dataset.accountId = accountId;
       let draftsFolderButton = document.getElementById('draftsFolderButton');
       draftsFolderButton.dataset.accountId = accountId;
       let trashFolderButton = document.getElementById('trashFolderButton');
       trashFolderButton.dataset.accountId = accountId;
+      let addFolderButton = document.getElementById('addFolderButton');
+      addFolderButton.dataset.accountId = accountId;
+
+      getFolderList();
     }
 
 // New function to fetch recent mails and update the inbox
-function updateInbox(accountId, folderId = 0) {
+function updateInbox(accountId, folderId = 'inbox') {
 
-  if (folderId == 0) {
-    var url = `/getEmails/${accountId}`;
   
-  }
-  else {
     var url = `/getFolderEmails/${accountId}/${folderId}`
-  }
+
    console.log(`folderId:${folderId}`)
     
     fetch(url)
@@ -313,6 +315,11 @@ function updateInbox(accountId, folderId = 0) {
             }
           })
         }
+
+        function getEmailsByLabel(labelID) {
+
+        }
+
         function addLabelpopup(){
 
           const popupContainer = document.getElementById("popupContainer");
@@ -343,6 +350,41 @@ function updateInbox(accountId, folderId = 0) {
 
         }
 
+        function getFolderList(){
+
+          let accountId = document.getElementById('inboxFolderButton').dataset.accountId;
+
+          fetch(`/getFolders/${accountId}`)
+          .then(response => response.json())
+          .then(folders => {
+            console.log("response recieved-getfolderlist");
+            const foldersDiv = document.getElementById('addedFoldersList');
+            // Clear the labels list
+            foldersDiv.innerHTML = '';
+            // Add each label to the list
+            let foldersCount = 0;
+            console.log(folders);
+            for (const folder of folders) {
+                foldersCount++;
+                console.log(folder);
+          
+
+                const div = document.createElement('div');
+                div.className = 'folder-item';
+                div.textContent = folder.folderName;
+                console.log(folder.folderName);
+                // Store the label ID in a data attribute
+                div.dataset.folderId = folder.folderid;
+                div.onclick = function() {
+                    // When the circle is clicked, fetch emails for the associated account
+                    getEmailsByLabel(this.dataset.labelID);
+                };
+
+                foldersDiv.appendChild(div);
+            }
+          })
+        }
+
         function addLabel(labelName) {
           // Function to handle label addition
           // Replace with your desired logic
@@ -362,6 +404,15 @@ function updateInbox(accountId, folderId = 0) {
           popupContainer.innerHTML = "";
         }
 
+      function toggleFolderList() {
+
+        let list= document.getElementById('addedFoldersList');
+        list.classList.toggle('hidden');
+        let toggle = document.getElementById('folderToggle');
+        toggle.classList.toggle('fa-angle-up');
+        toggle.classList.toggle('fa-angle-down');
+      }
+
       function toggleLabelList() {
 
         let list= document.getElementById('labelsList');
@@ -369,6 +420,49 @@ function updateInbox(accountId, folderId = 0) {
         let toggle = document.getElementById('labelToggle');
         toggle.classList.toggle('fa-angle-up');
         toggle.classList.toggle('fa-angle-down');
+      }
+
+      function addFolderpopup(accountId){
+
+        const popupContainer = document.getElementById("popupContainer");
+        const popup = document.createElement("div");
+        popup.className = "popup";
+
+    // Create the label input field
+    const folderInput = document.createElement("input");
+    folderInput.type = "text";
+    folderInput.placeholder = "Enter folder name";
+    popup.appendChild(folderInput);
+
+     // Create the submit button
+     const submitButton = document.createElement("button");
+     submitButton.textContent = "Submit";
+     submitButton.addEventListener("click", function() {
+       const folderName = folderInput.value;
+       addFolder(accountId, folderName);
+       closePopup();
+     });
+     popup.appendChild(submitButton);
+
+    // Append the popup to the container
+    popupContainer.appendChild(popup);
+
+    // Set focus on the input field
+    folderInput.focus();
+
+      }
+
+      function addFolder(accountID, folderName) {
+        // Function to handle Folder addition
+        // Replace with your desired logic
+        console.log("Adding Folder:", folderName);
+        folderName = String(folderName); 
+        fetch (`/addFolder/${accountID}/${folderName}`)
+        .then(response => response.json())
+        .then(response => {
+          console.log (response);
+          getFolderList();
+        });
       }
 
       function openCompose() {
@@ -478,6 +572,7 @@ function updateInbox(accountId, folderId = 0) {
         updateAccounts();
       
         getLabelList();
+        
 
         // CKEditor
         ClassicEditor

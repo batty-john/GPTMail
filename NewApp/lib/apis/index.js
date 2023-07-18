@@ -73,10 +73,44 @@ app.get('/getEmail/:accountId/:uid', async (req, res) => {
  * 
  * 
  *******************************************/
+app.get('/getFolders/:accountId/', async (req, res) => { 
+
+
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in to continue');
+  }
+  
+  const accountId = req.params.accountId;
+  const userId = req.session.userId;
+ 
+
+  const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+  const account = accounts[0]
+  if (account.user_id !== userId) {
+    return res.status(403).send('Not authorized to access this account');
+  }
+  
+ 
+  const query = 'SELECT * FROM folders WHERE accountid = ?';
+  
+
+
+  let [folders] = await db.query (query, accountId);
+  res.json(folders);
+
+});
+
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
 app.get('/getFolderEmails/:accountId/:folderId', async (req, res) => { 
 
+  
+
   const accountId = req.params.accountId;
-  const folderId = req.params.folderId;
+  var folderId = req.params.folderId;
   
   // Check if the user is logged in and the accountId belongs to them
   const userId = req.session.userId;
@@ -90,10 +124,35 @@ app.get('/getFolderEmails/:accountId/:folderId', async (req, res) => {
     return res.status(403).send('Not authorized to access this account');
   }
 
+  if(folderId === 'inbox') {
+
+    console.log('Inbox');
+   
+    let [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id IS NULL', [accountId]);
+    res.json(emails);
+
+  }
+  else {
+    
+    if(folderId === 'sent') {
+    let [folders] = await db.query('SELECT folderid FROM folders WHERE accountid = ? AND foldername = ?', [accountId, 'sent']);
+    folderId = folders[0].folderid;
+    }
+    else if(folderId === 'drafts') {
+      let [folders] = await db.query('SELECT folderid FROM folders WHERE accountid = ? AND foldername = ?', [accountId, 'drafts']);
+      folderId = folders[0].folderid;
+    }
+    else if(folderId === 'trash') {
+      let [folders] = await db.query('SELECT folderid FROM folders WHERE accountid = ? AND foldername = ?', [accountId, 'trash']);
+      folderId = folders[0].folderid;
+    }
+
   // Fetch the emails
   let [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id = ?', [accountId, folderId]);
 
   res.json(emails);
+  }
+  
 });
 
   /*********************************************
@@ -119,11 +178,13 @@ app.get('/getFolderEmails/:accountId/:folderId', async (req, res) => {
     }
     
     // Delete the email
-    let trashFolderID = await db.query('SELECT folderid FROM folders WHERE accountid = ? AND foldername = ?', [accountId, 'Trash']);
-    console.log(trashFolderID);
-    trashFolderID = trashFolderID[0][0].id;
+    let [trashFolders] = await db.query('SELECT folderid FROM folders WHERE accountid = ? AND foldername = ?', [accountId, 'Trash']);
+    console.log(trashFolders);
+    let trashFolder = trashFolders[0];
+    console.log(trashFolder);
 
-    await db.query('UPDATE emails SET folder_id = ? WHERE account_id = ? AND uid = ?', [trashFolderID, accountId, uid]);
+    console.log(`UPDATE emails SET folder_id = ${trashFolder.folderid} WHERE account_id = ${accountId} AND UID = ${uid}`)
+    await db.query('UPDATE emails SET folder_id = ? WHERE account_id = ? AND UID = ?', [trashFolder.folderid, accountId, uid]);
 
     res.json(`Deleted email ${req.params.uid}`);
   
@@ -145,8 +206,27 @@ app.post('/deleteEmails/:accountId', async (req, res) => {
  *******************************************/
 app.get('/addFolder/:accountID/:folderName', async (req, res) => { 
 
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in to add a Folder');
+  }
 
+  const folderName = req.params.folderName;
+  const accountID = req.params.accountID;
+
+  const query = 'INSERT INTO folders (folderName, accountid) VALUES (?,?)';
+  console.log(`INSERT INTO folders (folderName, accountid) VALUES (${folderName},${accountID})`);
+  
+
+  try {
+    
+    await db.query (query, [folderName, accountID]);
+    res.status(200);
+  }
+  catch (err) {
+    res.status(500).send('Error adding label: ' + err.message);
+  }
 });
+
 
 /*********************************************
  * 
@@ -352,7 +432,7 @@ app.get('/getLabels', async (req, res) => {
 app.get('/addLabel/:label_name', async (req, res) => {
 
   if (!req.session.userId) {
-    return res.status(401).send('Please log in to add an account');
+    return res.status(401).send('Please log in to add a label');
   }
 
   const query = 'INSERT INTO labels (label_name, userId, color) VALUES (?,?,?)';
