@@ -381,7 +381,41 @@ app.post('/search//:accountID', async (req, res) => {
  * 
  *******************************************/
 app.post('/saveDraft/:accountID', async (req, res) => { 
-  
+
+   //get drafts folder id
+   let [folders] = await db.query('SELECT folderID FROM folders WHERE accountId = ? AND folderName = ?', [accountId, 'Drafts']);
+   let draftsFolderId = folders[0].folderID;
+
+
+});
+
+/*********************************************
+ * 
+ * 
+ * 
+ *******************************************/
+app.post('/loadDraft/:accountID/:emailID', async (req, res) => { 
+  let accountId = req.params.accountID;
+  let emailID = req.params.emailID;
+  let userId = req.session.userId;
+
+  //check if user is logged in
+  if (!userId) {
+    return res.status(401).send('Please log in to continue');
+  }
+
+  //check if account belongs to user
+  let [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+  let account = accounts[0];
+  if (account.user_id !== userId) {
+    return res.status(403).send('Not authorized to access this account');
+  }
+
+  //get email
+  let [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND id = ?', [accountId, emailID]);
+  let email = emails[0];
+
+  res.json(email);
 
 });
 
