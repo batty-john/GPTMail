@@ -561,6 +561,29 @@ function updateInbox(accountId, folderId = 'inbox') {
         
       }
 
+      function loadDraft(accountId, draftId) {
+
+        let url = `/loadDraft/${accountId}/${draftId}`;
+        fetch(url)
+        .then(response => response.json())
+        .then(email => {
+          console.log(email);
+          let fromInput = document.getElementById('fromInput');
+          let toInput = document.getElementById('toInput');
+          let ccInput = document.getElementById('cc');
+          let bccInput = document.getElementById('bcc');
+          let subjectInput = document.getElementById('subject');
+          let editorElement = document.getElementById('editorElementId');
+
+          fromInput.value = email.from;
+          toInput.value = email.to;
+          ccInput.value = email.cc;
+          bccInput.value = email.bcc;
+          subjectInput.value = email.subject;
+          editorElement.innerHTML = email.content;
+        })
+      }
+
       function clearEditor() {
         if (editorInstance) {
             editorInstance.setData('');
