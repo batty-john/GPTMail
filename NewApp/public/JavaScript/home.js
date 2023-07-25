@@ -95,6 +95,7 @@ const form = document.getElementById('addAccountForm');
                     const option = document.createElement('option');
                     option.value = account.id;
                     option.innerHTML = account.email;
+                    option.name = account.email;
                     fromDiv.appendChild(option);
                     // Store the account ID in a data attribute
                     div.dataset.accountId = account.id;
@@ -517,7 +518,8 @@ function updateInbox(accountId, folderId = 'inbox') {
 
       function saveDraft() {
         
-        const from = document.getElementById('fromInput').value;
+        const from = document.getElementById('fromInput').name;
+        const accountId = document.getElementById('fromInput').value;
         const to = document.getElementById('toInput').value;
         const cc = document.getElementById('cc').value;
         const bcc = document.getElementById('bcc').value;
@@ -531,10 +533,11 @@ function updateInbox(accountId, folderId = 'inbox') {
           cc: cc,
           bcc: bcc,
           subject: subject,
-          content: content
+          content: content,
+          accountId: accountId
         };
 
-        fetch('/saveDraft/', {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
+        fetch(`/saveDraft/${accountId}`, {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
         .then((data) => {console.log(data)});
         // For example, you can make an AJAX request to a server-side endpoint
         // to handle the email sending process

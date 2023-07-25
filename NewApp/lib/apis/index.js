@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { now } = require('lodash');
 
 module.exports = function(db, session) {
 const app = express();
@@ -382,9 +383,16 @@ app.post('/search//:accountID', async (req, res) => {
  *******************************************/
 app.post('/saveDraft/:accountID', async (req, res) => { 
 
+  let accountId = req.params.accountID;
+
    //get drafts folder id
    let [folders] = await db.query('SELECT folderID FROM folders WHERE accountId = ? AND folderName = ?', [accountId, 'Drafts']);
    let draftsFolderId = folders[0].folderID;
+   console.log(req.body);
+   let date = new Date();
+   let thread_id = 0;
+   db.query('INSERT INTO emails (account_id, subject, sender, recipients, date, cc_recipients, bcc_recipients, folder_id, thread_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [accountId, req.body.subject, req.body.from, req.body.to, date, req.body.cc_recipients, req.body.bcc_recipients, draftsFolderId, thread_id]);
+   res.send('Draft saved');
 
 
 });
