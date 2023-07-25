@@ -102,7 +102,7 @@
                         <i class="far fa-trash-can btn"></i>
                         <i class="far fa-folder btn"></i>
                         <i class="far fa-flag btn"></i>
-                        <i class="far fa-star btn"></i>
+                        <i class="far fa-circle btn"></i>
                     </div>
                     <div class="sender-line">
                         <h3><strong>John Batty</strong></h3>
@@ -131,8 +131,6 @@
                 <button id="close" onclick="closeEmail()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div id="close-email-view">
-            </div>
             <div id="email-content-container">
                 <p>This is the content container</p>
             </div>
@@ -144,6 +142,7 @@
                     <select id="fromInput" >
                         <option value="9">morgan.thacker@ducimus.digital</option>
                     </select>
+                    <button id="closeCompose" onclick="saveDraft()"><i class="fa-solid fa-xmark"></i></button>
                   </div>
                 <div>
                     <label for="toInput">To:</label>
@@ -160,13 +159,11 @@
                   <div>
                     <label for="subject">Subject:</label>
                     <input type="text" id="subject">
-                    <button id="sendButton" onclick = "sendEmail()">Send</button>
                   </div>
-                  
                 </div>
                 <div id="email-reply-location">
                     <textarea id="editorElementId"></textarea>
-                    
+                    <button id="sendButton" onclick = "sendEmail()">Send</button>
                 </div>
                 
             </div>

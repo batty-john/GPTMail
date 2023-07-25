@@ -274,9 +274,9 @@ app.get('/setPriority/:uid/:priority', async (req, res) => {
  * 
  *******************************************/
 app.post('/sendEmail/', async (req, res) => { 
-
+  console.log(req.body);
   res.json(`Sent email`);
-
+  const query = 'INSERT INTO emails (account_id, sender, recipients, subject, date, cc_recipients, bcc_recipients, folder_Id) VALUES (?, SELECT email FROM user_accounts WHERE id = ?, ?, ?, ?, ?, ?, SELECT folderID FROM folders WHERE folderName = Sent AND accountId = ?)'
 });
 
 /*********************************************
@@ -381,7 +381,7 @@ app.post('/search//:accountID', async (req, res) => {
  * 
  *******************************************/
 app.post('/saveDraft/:accountID', async (req, res) => { 
-
+  
 
 });
 

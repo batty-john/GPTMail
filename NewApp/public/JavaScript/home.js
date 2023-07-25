@@ -172,10 +172,10 @@ function updateInbox(accountId, folderId = 'inbox') {
           flagButton.classList.add("far");
           flagButton.classList.add("fa-flag");
           flagButton.classList.add("btn");
-          let starButton = document.createElement("i");
-          starButton.classList.add("far");
-          starButton.classList.add("fa-star");
-          starButton.classList.add("btn");
+          let circleButton = document.createElement("i");
+          circleButton.classList.add("far");
+          circleButton.classList.add("fa-circle");
+          circleButton.classList.add("btn");
 
           emailDiv.addEventListener("click", function(){
             event.preventDefault();
@@ -186,7 +186,7 @@ function updateInbox(accountId, folderId = 'inbox') {
           popupMenu.appendChild(trashButton);
           popupMenu.appendChild(folderButton);
           popupMenu.appendChild(flagButton);
-          popupMenu.appendChild(starButton);
+          popupMenu.appendChild(circleButton);
           emailDiv.appendChild(popupMenu);
 
           emailDiv.innerHTML += `
@@ -515,6 +515,32 @@ function updateInbox(accountId, folderId = 'inbox') {
         emailContentContainer.classList.add('hidden');
       }
 
+      function saveDraft() {
+        
+        const from = document.getElementById('fromInput').value;
+        const to = document.getElementById('toInput').value;
+        const cc = document.getElementById('cc').value;
+        const bcc = document.getElementById('bcc').value;
+        const subject = document.getElementById('subject').value;
+        const content = editorInstance.getData();
+
+
+        const emailData = {
+          from: from,
+          to: to, 
+          cc: cc,
+          bcc: bcc,
+          subject: subject,
+          content: content
+        };
+
+        fetch('/saveDraft/', {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
+        .then((data) => {console.log(data)});
+        // For example, you can make an AJAX request to a server-side endpoint
+        // to handle the email sending process
+        console.log("Saving draft...", emailData);
+      }
+
 
       function sendEmail() {
         // Get the values from the input fields
@@ -538,6 +564,8 @@ function updateInbox(accountId, folderId = 'inbox') {
         };
       
         // Replace this with your logic to send the email
+        fetch('/sendEmail/', {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
+        .then((data) => {console.log(data)});
         // For example, you can make an AJAX request to a server-side endpoint
         // to handle the email sending process
         console.log("Sending email...", emailData);
@@ -552,6 +580,8 @@ function updateInbox(accountId, folderId = 'inbox') {
 
        
         clearEditor();
+        closeCompose();
+
 
         console.log(ClassicEditor.instances);
         for (instance in ClassicEditor.instances) {
@@ -566,7 +596,28 @@ function updateInbox(accountId, folderId = 'inbox') {
             editorInstance.setData('');
         }
     }
-    
+
+      function closeCompose () {
+        let inbox= document.getElementById('inbox');
+        let main= document.querySelector('main');
+        let editor= document.getElementById('email-reply-container');
+        let replyMenu= document.getElementById('reply-menu');
+        let emailContentContainer= document.getElementById('email-content-container');
+        inbox.classList.add('closed');
+        inbox.classList.remove('open');
+        main.classList.add('closed');
+        main.classList.remove('open');
+        editor.classList.add('hidden');
+        editor.style.display='block';
+        replyMenu.classList.remove('hidden');
+        emailContentContainer.classList.remove('hidden');
+
+      }
+
+      function saveAndClose () {
+        saveDraft();
+        closeCompose();
+      }
       
       document.addEventListener('DOMContentLoaded', (event) => {
         updateAccounts();

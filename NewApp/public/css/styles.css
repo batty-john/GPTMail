@@ -431,9 +431,23 @@ main.closed {
 }
 
 #email-reply-location {
+    position: relative;
     height: 100%;
 }
 
+#sendButton {
+    position: absolute;
+    bottom: 18%;
+    right: 15px;
+    border-radius: 7px;
+    border-color: #b0aeae;
+    background-color: transparent;
+    font-size: 20px;
+}
+
+#sendButton:hover {
+    background-color: #d0cccc;
+}
 #editorElementId {
     height: 500px;
 }
@@ -492,6 +506,25 @@ main.closed {
 
 #close:hover,
 #close:focus {
+    color: rgb(154, 155, 153);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#closeCompose {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding-left: 1em;
+    display: flex;
+    align-items: right;
+    justify-content: right;
+    color: #000;
+    font-size: 20px;
+}
+
+#closeCompose:hover,
+#closeCompose:focus {
     color: rgb(154, 155, 153);
     text-decoration: none;
     cursor: pointer;
