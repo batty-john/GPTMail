@@ -138,102 +138,110 @@ const form = document.getElementById('addAccountForm');
 async function updateInbox(accountId, folderId = 'inbox') {
 
   
-    var url = `/getFolderEmails/${accountId}/${folderId}`
+    
 
-   console.log(`folderId:${folderId}`)
-    var folderList = await getFolders(accountId);
+    let [folderList, emails] = await Promise.all([
+      getFolders(accountId),
+      getEmails(accountId, folderId)
+    ]);
+
     console.log("in update inbox", folderList);
-    //todo promise//
-    fetch(url)
-      .then(response => response.json())
-      .then(emails => {
-        let inboxEmailsDiv = document.getElementById('inbox-emails');
+
+    let inboxEmailsDiv = document.getElementById('inbox-emails');
         
-        inboxEmailsDiv.innerHTML = "";
+    inboxEmailsDiv.innerHTML = "";
 
-        for (let email of emails) {
-          console.log(email);
-          let emailDiv = document.createElement("div");
-          inboxEmailsDiv.appendChild (emailDiv);
-          emailDiv.classList.add("email-container");
-          emailDiv.setAttribute("id", `emailContainer${email.UID}`);
-          let folderDropDown = document.createElement("div");
-          folderDropDown.setAttribute("id", `folderDropDown${email.UID}`);
+    for (let email of emails) {
+      console.log(email);
+      let emailDiv = document.createElement("div");
+      inboxEmailsDiv.appendChild (emailDiv);
+      emailDiv.classList.add("email-container");
+      emailDiv.setAttribute("id", `emailContainer${email.UID}`);
+      let folderDropDown = document.createElement("div");
+      folderDropDown.setAttribute("id", `folderDropDown${email.UID}`);
 
-          folderList.forEach(function(item){
-            let folderElement = document.createElement("div");
-            folderElement.classList.add("folderDropDownBtn");
-            folderElement.addEventListener("click", moveFolder(email.UID));
-            folderElement.innerHTML = item.folderName;
-            folderDropDown.appendChild(folderElement);
-          })
-          let popupMenu = document.createElement("div");
-          popupMenu.classList.add("popup-menu");
-
-          let trashButton = document.createElement("i");
-          trashButton.setAttribute("id", `trashButton${email.UID}`);
-          trashButton.classList.add("far");
-          trashButton.classList.add("fa-trash-can");
-          trashButton.classList.add("btn");
-          
-          let folderButton = document.createElement("i");
-          folderButton.classList.add("far");
-          folderButton.classList.add("fa-folder");
-          folderButton.classList.add("btn");
-
-          let flagButton = document.createElement("i");
-          flagButton.classList.add("far");
-          flagButton.classList.add("fa-flag");
-          flagButton.classList.add("btn");
-          let circleButton = document.createElement("i");
-          circleButton.classList.add("far");
-          circleButton.classList.add("fa-circle");
-          circleButton.classList.add("btn");
-
-          emailDiv.addEventListener("click", function(){
-            event.preventDefault();
-            console.log("email clicked");
-            displayEmail(accountId, email.UID)
-          });
-
-          popupMenu.appendChild(trashButton);
-          popupMenu.appendChild(folderButton);
-          popupMenu.appendChild(flagButton);
-          popupMenu.appendChild(circleButton);
-          emailDiv.appendChild(popupMenu);
-
-          emailDiv.innerHTML += `
-          
-            <div class="sender-line">
-              <h3><strong>${email.sender}</strong></h3>
-              <p class="inbox-open-email-time">12:26</p>
-            </div>
-            <div class="subject-line">
-              <p>${email.subject}</p>
-            </div>
-            <div class="teaser-line">
-              <p>${email.preheader}</p>
-            </div>
-
-            <div class="email-border">
-            </div>
-        
-          `;
-          
-          document.getElementById(`trashButton${email.UID}`).addEventListener("click", function(event) {
-            console.log("Trash button clicked");
-            event.stopPropagation();
-            deleteSingle(accountId, email.UID);
-            
-          });
-          
-          
-        }
+      folderList.forEach(function(item){
+        let folderElement = document.createElement("div");
+        folderElement.classList.add("folderDropDownBtn");
+        folderElement.addEventListener("click", moveFolder(email.UID));
+        folderElement.innerHTML = item.folderName;
+        folderDropDown.appendChild(folderElement);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      let popupMenu = document.createElement("div");
+      popupMenu.classList.add("popup-menu");
+
+      let trashButton = document.createElement("i");
+      trashButton.setAttribute("id", `trashButton${email.UID}`);
+      trashButton.classList.add("far");
+      trashButton.classList.add("fa-trash-can");
+      trashButton.classList.add("btn");
+      
+      let folderButton = document.createElement("i");
+      folderButton.classList.add("far");
+      folderButton.classList.add("fa-folder");
+      folderButton.classList.add("btn");
+
+      let flagButton = document.createElement("i");
+      flagButton.classList.add("far");
+      flagButton.classList.add("fa-flag");
+      flagButton.classList.add("btn");
+      let circleButton = document.createElement("i");
+      circleButton.classList.add("far");
+      circleButton.classList.add("fa-circle");
+      circleButton.classList.add("btn");
+
+      emailDiv.addEventListener("click", function(){
+        event.preventDefault();
+        console.log("email clicked");
+        displayEmail(accountId, email.UID)
       });
+
+      popupMenu.appendChild(trashButton);
+      popupMenu.appendChild(folderButton);
+      popupMenu.appendChild(flagButton);
+      popupMenu.appendChild(circleButton);
+      emailDiv.appendChild(popupMenu);
+
+      emailDiv.innerHTML += `
+      
+        <div class="sender-line">
+          <h3><strong>${email.sender}</strong></h3>
+          <p class="inbox-open-email-time">12:26</p>
+        </div>
+        <div class="subject-line">
+          <p>${email.subject}</p>
+        </div>
+        <div class="teaser-line">
+          <p>${email.preheader}</p>
+        </div>
+
+        <div class="email-border">
+        </div>
+    
+      `;
+      
+      document.getElementById(`trashButton${email.UID}`).addEventListener("click", function(event) {
+        console.log("Trash button clicked");
+        event.stopPropagation();
+        deleteSingle(accountId, email.UID);
+        
+      });
+          
+          
+        
+      }
+     
+    
   }
+
+    function getEmails(accountId, folderId) {
+      var url = `/getFolderEmails/${accountId}/${folderId}`
+      return fetch(url)
+        .then(response => response.json())
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
       
 
       function displayEmail(accountId, uid) {
@@ -402,14 +410,19 @@ async function updateInbox(accountId, folderId = 'inbox') {
 
         function getFolders(accountId) {
           console.log("in getFolders");
-          fetch(`/getFolders/${accountId}`)
-          .then(response => response.json())
-          .then(folders => {
-            console.log("in fetch folders", folders);
-            return folders
+          return fetch(`/getFolders/${accountId}`)
+            .then(response => response.json())
+            .then(folders => {
+              console.log("in fetch folders", folders);
+              return folders;
             
           })
 
+
+        function moveToFolder(uid, folderId) {
+          fetch(`/moveToFolder/${uid}/${folderId}`)
+            .then(console.log("movefolder"));
+        }
 
         }
         function addLabel(labelName) {
