@@ -163,7 +163,7 @@ async function updateInbox(accountId, folderId = 'inbox') {
       folderList.forEach(function(item){
         let folderElement = document.createElement("div");
         folderElement.classList.add("folderDropDownBtn");
-        folderElement.addEventListener("click", moveFolder(email.UID));
+        folderElement.addEventListener("click", moveToFolder(email.UID, item.folderId));
         folderElement.innerHTML = item.folderName;
         folderDropDown.appendChild(folderElement);
       })
@@ -418,13 +418,14 @@ async function updateInbox(accountId, folderId = 'inbox') {
             
           })
 
-
+        }
+        
         function moveToFolder(uid, folderId) {
           fetch(`/moveToFolder/${uid}/${folderId}`)
             .then(console.log("movefolder"));
         }
 
-        }
+        
         function addLabel(labelName) {
           // Function to handle label addition
           // Replace with your desired logic
