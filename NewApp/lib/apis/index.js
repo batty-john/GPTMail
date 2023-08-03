@@ -234,8 +234,29 @@ app.get('/addFolder/:accountID/:folderName', async (req, res) => {
  * 
  * 
  *******************************************/
-app.get('/addToFolder/:uid/:folderID', async (req, res) => { 
+app.get('/moveToFolder/:uid/:folderID', async (req, res) => { 
 
+  const folderID = req.params.folderID;
+  const uid = req.params.uid;
+
+  // Check if the user is logged in and the accountId belongs to them
+  const userId = req.session.userId;
+  if (!userId) {
+    return res.status(401).send('Not logged in');
+  }
+
+  const [folders] = await db.query('SELECT * FROM folders WHERE id = ?', [folderID]);
+  const folder = folders[0]
+
+  const accountId = folder.accountId;
+
+  const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+  const account = accounts[0]
+  if (account.user_id !== userId) {
+    return res.status(403).send('Not authorized to access this account');
+  }
+
+  await db.query('UPDATE emails SET folder_id = ? WHERE account_id = ? AND UID = ?', [folderid, accountId, uid]);
 
 });
 
