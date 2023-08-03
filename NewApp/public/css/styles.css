@@ -461,6 +461,7 @@ main.closed {
 
 #sendInputs {
     width: 100%;
+    position: relative;
 }
 
 #sendInputs>div {
@@ -521,6 +522,9 @@ main.closed {
     justify-content: right;
     color: #000;
     font-size: 20px;
+    position: absolute;
+    right: 5px;
+    top: 2px;
 }
 
 #closeCompose:hover,
