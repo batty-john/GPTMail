@@ -159,16 +159,27 @@ async function updateInbox(accountId, folderId = 'inbox') {
       emailDiv.setAttribute("id", `emailContainer${email.UID}`);
       let folderDropDown = document.createElement("div");
       folderDropDown.setAttribute("id", `folderDropDown${email.UID}`);
+      folderDropDown.classList.add("folderDropDown");
 
       folderList.forEach(function(item){
+        console.log("Folder List Item");
+        console.log(item);
         let folderElement = document.createElement("div");
-        folderElement.classList.add("folderDropDownBtn");
-        folderElement.addEventListener("click", moveToFolder(email.UID, item.folderId));
+        folderElement.classList.add("folderDropDownItem");
+        folderElement.setAttribute("onclick", `moveToFolder(${email.UID}, ${item.folderID})`);
+        // folderElement.addEventListener("click", (event) => {
+        //   console.log("folder clicked");
+        //   event.stopPropagation();
+        //   moveToFolder(email.UID, item.folderId)
+        // });
         folderElement.innerHTML = item.folderName;
         folderDropDown.appendChild(folderElement);
       })
+
+
       let popupMenu = document.createElement("div");
       popupMenu.classList.add("popup-menu");
+      popupMenu.setAttribute("id", `popupMenu${email.UID}`);
 
       let trashButton = document.createElement("i");
       trashButton.setAttribute("id", `trashButton${email.UID}`);
@@ -180,6 +191,9 @@ async function updateInbox(accountId, folderId = 'inbox') {
       folderButton.classList.add("far");
       folderButton.classList.add("fa-folder");
       folderButton.classList.add("btn");
+      folderButton.classList.add("folderButton");
+
+      folderButton.appendChild(folderDropDown);
 
       let flagButton = document.createElement("i");
       flagButton.classList.add("far");
@@ -190,17 +204,19 @@ async function updateInbox(accountId, folderId = 'inbox') {
       circleButton.classList.add("fa-circle");
       circleButton.classList.add("btn");
 
-      emailDiv.addEventListener("click", function(){
-        event.preventDefault();
-        console.log("email clicked");
-        displayEmail(accountId, email.UID)
-      });
+      
 
       popupMenu.appendChild(trashButton);
       popupMenu.appendChild(folderButton);
       popupMenu.appendChild(flagButton);
       popupMenu.appendChild(circleButton);
       emailDiv.appendChild(popupMenu);
+
+      emailDiv.addEventListener("click", function(event){
+        console.log(event.target);
+        if (document.getElementById(`popupMenu${email.UID}`).contains(event.target)) return;
+        displayEmail(accountId, email.UID)
+      });
 
       emailDiv.innerHTML += `
       
@@ -221,7 +237,6 @@ async function updateInbox(accountId, folderId = 'inbox') {
       `;
       
       document.getElementById(`trashButton${email.UID}`).addEventListener("click", function(event) {
-        console.log("Trash button clicked");
         event.stopPropagation();
         deleteSingle(accountId, email.UID);
         
@@ -259,13 +274,11 @@ async function updateInbox(accountId, folderId = 'inbox') {
         mainDiv.classList.remove('closed')
         inboxDiv.classList.add('open');
         inboxDiv.classList.remove('closed');
-        console.log(`in display email/${uid}`);
       let url = `/displayEmail/${accountId}/${uid}`;
       
       fetch(url)
         .then(response => response.json())
         .then(email => {
-          console.log(email);
           contentDiv.innerHTML = email;
         })
       }
@@ -371,59 +384,59 @@ async function updateInbox(accountId, folderId = 'inbox') {
 
         }
 
-        function getFolderList(accountId = 0){
+function getFolderList(accountId = 0){
 
-          if (accountId === 0) {
-            accountId = document.getElementById('inboxFolderButton').dataset.accountId;
-          }
-         
-          fetch(`/getFolders/${accountId}`)
-          .then(response => response.json())
-          .then(folders => {
-            console.log("response recieved-getfolderlist");
-            const foldersDiv = document.getElementById('addedFoldersList');
-            // Clear the labels list
-            foldersDiv.innerHTML = '';
-            // Add each label to the list
-            let foldersCount = 0;
-            
-            for (const folder of folders) {
-                foldersCount++;
-                
-          
-
-                const div = document.createElement('div');
-                div.className = 'folder-item';
-                div.textContent = folder.folderName;
-                
-                // Store the label ID in a data attribute
-                div.dataset.folderId = folder.folderid;
-                div.onclick = function() {
-                    // When the circle is clicked, fetch emails for the associated account
-                    getEmailsByLabel(this.dataset.labelID);
-                };
-
-                foldersDiv.appendChild(div);
-            }
-          })
-        }
-
-        function getFolders(accountId) {
-          console.log("in getFolders");
-          return fetch(`/getFolders/${accountId}`)
-            .then(response => response.json())
-            .then(folders => {
-              console.log("in fetch folders", folders);
-              return folders;
-            
-          })
-
-        }
+  if (accountId === 0) {
+    accountId = document.getElementById('inboxFolderButton').dataset.accountId;
+  }
+  
+  fetch(`/getFolders/${accountId}`)
+  .then(response => response.json())
+  .then(folders => {
+    console.log("response recieved-getfolderlist");
+    const foldersDiv = document.getElementById('addedFoldersList');
+    // Clear the labels list
+    foldersDiv.innerHTML = '';
+    // Add each label to the list
+    let foldersCount = 0;
+    
+    for (const folder of folders) {
+        foldersCount++;
         
-        function moveToFolder(uid, folderId) {
-          fetch(`/moveToFolder/${uid}/${folderId}`)
-            .then(console.log("movefolder"));
-        }
+  
+
+        const div = document.createElement('div');
+        div.className = 'folder-item';
+        div.textContent = folder.folderName;
+        
+        // Store the label ID in a data attribute
+        div.dataset.folderId = folder.folderid;
+        div.onclick = function() {
+            // When the circle is clicked, fetch emails for the associated account
+            getEmailsByLabel(this.dataset.labelID);
+        };
+
+        foldersDiv.appendChild(div);
+    }
+  })
+}
+
+function getFolders(accountId) {
+  console.log("in getFolders");
+  return fetch(`/getFolders/${accountId}`)
+    .then(response => response.json())
+    .then(folders => {
+      console.log("in fetch folders", folders);
+      return folders;
+    
+  })
+
+}
+        
+function moveToFolder(uid, folderId) {
+  fetch(`/moveToFolder/${uid}/${folderId}`)
+    .then(console.log("movefolder"));
+}
 
         
         function addLabel(labelName) {
