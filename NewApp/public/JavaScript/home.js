@@ -91,9 +91,9 @@ async function updateInbox(accountId, folderId = 'inbox') {
     let emailDiv = document.createElement("div");
     inboxEmailsDiv.appendChild(emailDiv);
     emailDiv.classList.add("email-container");
-    emailDiv.setAttribute("id", `emailContainer${email.UID}`);
+    emailDiv.setAttribute("id", `emailContainer${email.uid}`);
     let folderDropDown = document.createElement("div");
-    folderDropDown.setAttribute("id", `folderDropDown${email.UID}`);
+    folderDropDown.setAttribute("id", `folderDropDown${email.uid}`);
     folderDropDown.classList.add("folderDropDown");
 
     folderList.forEach(function (item) {
@@ -101,11 +101,11 @@ async function updateInbox(accountId, folderId = 'inbox') {
       console.log(item);
       let folderElement = document.createElement("div");
       folderElement.classList.add("folderDropDownItem");
-      folderElement.setAttribute("onclick", `moveToFolder(${email.UID}, ${item.folder_id})`);
+      folderElement.setAttribute("onclick", `moveToFolder(${email.uid}, ${item.id})`);
       // folderElement.addEventListener("click", (event) => {
       //   console.log("folder clicked");
       //   event.stopPropagation();
-      //   moveToFolder(email.UID, item.folderId)
+      //   moveToFolder(email.uid, item.folderId)
       // });
       folderElement.innerHTML = item.folder_name;
       folderDropDown.appendChild(folderElement);
@@ -114,10 +114,10 @@ async function updateInbox(accountId, folderId = 'inbox') {
 
     let popupMenu = document.createElement("div");
     popupMenu.classList.add("popup-menu");
-    popupMenu.setAttribute("id", `popupMenu${email.UID}`);
+    popupMenu.setAttribute("id", `popupMenu${email.uid}`);
 
     let trashButton = document.createElement("i");
-    trashButton.setAttribute("id", `trashButton${email.UID}`);
+    trashButton.setAttribute("id", `trashButton${email.uid}`);
     trashButton.classList.add("far");
     trashButton.classList.add("fa-trash-can");
     trashButton.classList.add("btn");
@@ -149,8 +149,8 @@ async function updateInbox(accountId, folderId = 'inbox') {
 
     emailDiv.addEventListener("click", function (event) {
       console.log(event.target);
-      if (document.getElementById(`popupMenu${email.UID}`).contains(event.target)) return;
-      displayEmail(accountId, email.UID)
+      if (document.getElementById(`popupMenu${email.uid}`).contains(event.target)) return;
+      displayEmail(accountId, email.uid)
     });
 
     emailDiv.innerHTML += `
@@ -171,9 +171,9 @@ async function updateInbox(accountId, folderId = 'inbox') {
     
       `;
 
-    document.getElementById(`trashButton${email.UID}`).addEventListener("click", function (event) {
+    document.getElementById(`trashButton${email.uid}`).addEventListener("click", function (event) {
       event.stopPropagation();
-      deleteSingle(accountId, email.UID);
+      deleteSingle(accountId, email.uid);
 
     });
 

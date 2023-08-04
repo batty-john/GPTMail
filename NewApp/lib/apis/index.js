@@ -129,30 +129,35 @@ module.exports = function (db, session) {
       return res.status(403).send('Not authorized to access this account');
     }
 
-    if (folderId === 'inbox') {
+    let emails;
 
-      console.log('Inbox');
+    switch (folderId) {
+      case 'inbox':
+        console.log('Inbox');
 
-      let [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id IS NULL', [accountId]);
-      res.json(emails);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id IS NULL', [accountId]);
+        res.json(emails);
 
-    } else {
-
-      if (folderId === 'sent') {
-        let [folders] = await db.query('SELECT id FROM folders WHERE account_id = ? AND folder_name = ?', [accountId, 'sent']);
-        folderId = folders[0].id;
-      } else if (folderId === 'drafts') {
-        let [folders] = await db.query('SELECT id FROM folders WHERE account_id = ? AND folder_name = ?', [accountId, 'drafts']);
-        folderId = folders[0].id;
-      } else if (folderId === 'trash') {
-        let [folders] = await db.query('SELECT id FROM folders WHERE account_id = ? AND folder_name = ?', [accountId, 'trash']);
-        folderId = folders[0].id;
-      }
-
-      // Fetch the emails
-      let [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id = ?', [accountId, folderId]);
-
-      res.json(emails);
+        break;
+      case 'sent':
+        console.log('Sent');
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND email_status = ?', [accountId, 'sent']);
+        res.json(emails);
+        break;
+      case 'drafts':
+        console.log('Drafts');
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND email_status = ?', [accountId, 'draft']);
+        res.json(emails);
+        break;
+      case 'trash':
+        console.log('Trash');
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND email_status = ?', [accountId, 'trash']);
+        res.json(emails);
+        break;
+      default:
+        console.log('Default');
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id = ?', [accountId, folderId]);
+        res.json(emails);
     }
 
   });
