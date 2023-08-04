@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://kit.fontawesome.com/866758967d.js" crossorigin="anonymous"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/33.0.0/classic/ckeditor.js"></script>
-   
+
 
 
 
@@ -38,36 +38,42 @@
     </header>
     <div id="wrapper">
         <nav>
-            <button id="composeButton" onclick = "openCompose()"><i class="fas fa-pencil-alt"></i>Compose</button>
+            <button id="composeButton" onclick="openCompose()"><i class="fas fa-pencil-alt"></i>Compose</button>
             <div class="folder-column">
-                
 
-                <div class="folder-item" id="inboxFolderButton" onclick="updateInbox(this.dataset.accountId, 'inbox')"><i class="far fa-envelope-open"></i>Inbox<span class="new-email-count"></span></div>
-                <div class="folder-item" id = "sentFolderButton" onclick="updateInbox(this.dataset.accountId, 'sent')"><i class="far fa-paper-plane"></i>Sent</div>
-                <div class="folder-item" id="draftsFolderButton" onclick="updateInbox(this.dataset.accountId, 'drafts')"><i class="far fa-note-sticky"></i>Drafts</div>
-                <div class="folder-item" id="trashFolderButton" onclick="updateInbox(this.dataset.accountId, 'trash')"><i class="far fa-trash-can"></i>Trash</div>
-                
+
+                <div class="folder-item" id="inboxFolderButton" onclick="updateInbox(this.dataset.accountId, 'inbox')">
+                    <i class="far fa-envelope-open"></i>Inbox<span class="new-email-count"></span></div>
+                <div class="folder-item" id="sentFolderButton" onclick="updateInbox(this.dataset.accountId, 'sent')"><i
+                        class="far fa-paper-plane"></i>Sent</div>
+                <div class="folder-item" id="draftsFolderButton"
+                    onclick="updateInbox(this.dataset.accountId, 'drafts')"><i class="far fa-note-sticky"></i>Drafts
+                </div>
+                <div class="folder-item" id="trashFolderButton" onclick="updateInbox(this.dataset.accountId, 'trash')">
+                    <i class="far fa-trash-can"></i>Trash</div>
+
                 <div class="folder-header">
                     <span onclick="toggleFolderList()">
-                      Folders <i class="fas fa-angle-down" id="folderToggle"></i>
+                        Folders <i class="fas fa-angle-down" id="folderToggle"></i>
                     </span>
-                    <i class="far fa-plus btn folder-btn" id="addFolderButton" onclick = "addFolderpopup(this.dataset.accountId)"></i> 
-        
-                <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
+                    <i class="far fa-plus btn folder-btn" id="addFolderButton"
+                        onclick="addFolderpopup(this.dataset.accountId)"></i>
+
+                    <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
                     <div id="addedFoldersList" class="hidden">
-                        
+
                     </div>
                 </div>
 
                 <div class="folder-header">
                     <span onclick="toggleLabelList()">
-                      Labels <i class="fas fa-angle-down" id="labelToggle"></i>
+                        Labels <i class="fas fa-angle-down" id="labelToggle"></i>
                     </span>
-                    <i class="far fa-plus btn folder-btn" onclick = "addLabelpopup()"></i> 
-        
-                <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
+                    <i class="far fa-plus btn folder-btn" onclick="addLabelpopup()"></i>
+
+                    <!-- <div class="folder-item" >More <i class="fas fa-angle-down"></i></div> -->
                     <div id="labelsList" class="hidden">
-                        
+
                     </div>
                 </div>
             </div>
@@ -125,9 +131,10 @@
         <main class="closed">
             <div class="reply-menu" id="reply-menu">
                 <i class="fas fa-reply btn" id="replyButton" onclick="openReply()"></i>
-                <i class="fas fa-reply-all btn" id="replyAllButton" onclick= "openReply()"></i>
+                <i class="fas fa-reply-all btn" id="replyAllButton" onclick="openReply()"></i>
                 <i class="fas fa-share btn" id="forwardButton"></i>
-                <i class="fas fa-trash btn" id="reply-menu-trash" onclick="deleteSingle(this.dataset.accountId, this.dataset.uid)"></i>
+                <i class="fas fa-trash btn" id="reply-menu-trash"
+                    onclick="deleteSingle(this.dataset.accountId, this.dataset.uid)"></i>
                 <button id="close" onclick="closeEmail()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
@@ -136,36 +143,36 @@
             </div>
             <div id="email-reply-container" class="hidden">
                 <div id="sendInputs">
-                
-                <div>
-                    <label for="fromInput">From:</label>
-                    <select id="fromInput" >
-                        <option value="9">morgan.thacker@ducimus.digital</option>
-                    </select>
-                    <button id="closeCompose" onclick="saveAndClose()"><i class="fa-solid fa-xmark"></i></button>
-                  </div>
-                <div>
-                    <label for="toInput">To:</label>
-                    <input type="text" id="toInput">
-                  </div>
-                  <div id="ccContainer" class="hidden">
-                    <label for="cc">CC:</label>
-                    <input type="text" id="cc">
-                  </div>
-                  <div id="bccContainer" class="hidden">
-                    <label for="bcc">BCC:</label>
-                    <input type="text" id="bcc">
-                  </div>
-                  <div>
-                    <label for="subject">Subject:</label>
-                    <input type="text" id="subject">
-                  </div>
+
+                    <div>
+                        <label for="fromInput">From:</label>
+                        <select id="fromInput">
+                            <option value="9">morgan.thacker@ducimus.digital</option>
+                        </select>
+                        <button id="closeCompose" onclick="saveAndClose()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div>
+                        <label for="toInput">To:</label>
+                        <input type="text" id="toInput">
+                    </div>
+                    <div id="ccContainer" class="hidden">
+                        <label for="cc">CC:</label>
+                        <input type="text" id="cc">
+                    </div>
+                    <div id="bccContainer" class="hidden">
+                        <label for="bcc">BCC:</label>
+                        <input type="text" id="bcc">
+                    </div>
+                    <div>
+                        <label for="subject">Subject:</label>
+                        <input type="text" id="subject">
+                    </div>
                 </div>
                 <div id="email-reply-location">
                     <textarea id="editorElementId"></textarea>
-                    <button id="sendButton" onclick = "sendEmail()">Send</button>
+                    <button id="sendButton" onclick="sendEmail()">Send</button>
                 </div>
-                
+
             </div>
         </main>
 
@@ -203,7 +210,7 @@
 
 
     <div id="popupContainer"></div>
-    
+
     <script src="/JavaScript/home.js"></script>
 
 </body>
