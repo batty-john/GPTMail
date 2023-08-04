@@ -93,13 +93,13 @@ async function updateInbox(accountId, folderId = 'inbox') {
         console.log(item);
         let folderElement = document.createElement("div");
         folderElement.classList.add("folderDropDownItem");
-        folderElement.setAttribute("onclick", `moveToFolder(${email.UID}, ${item.folderID})`);
+        folderElement.setAttribute("onclick", `moveToFolder(${email.UID}, ${item.folder_id})`);
         // folderElement.addEventListener("click", (event) => {
         //   console.log("folder clicked");
         //   event.stopPropagation();
         //   moveToFolder(email.UID, item.folderId)
         // });
-        folderElement.innerHTML = item.folderName;
+        folderElement.innerHTML = item.folder_name;
         folderDropDown.appendChild(folderElement);
       })
 
@@ -334,10 +334,10 @@ function getFolderList(accountId = 0){
 
         const div = document.createElement('div');
         div.className = 'folder-item';
-        div.textContent = folder.folderName;
+        div.textContent = folder.folder_name;
         
         // Store the label ID in a data attribute
-        div.dataset.folderId = folder.folderid;
+        div.dataset.folderId = folder.folder_id;
         div.onclick = function() {
             // When the circle is clicked, fetch emails for the associated account
             getEmailsByLabel(this.dataset.labelID);
