@@ -1,78 +1,5 @@
 
 
-// Get the modal
-var modal = document.getElementById("addAccountModal");
-
-// Get the button that opens the modal
-var btn = document.getElementById("addAccountButton");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-var editorInstance = null;  // declare editorInstance at the top of your script
-
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-
-
-
-const form = document.getElementById('addAccountForm');
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(form);
-
-        const data = {};
-        for (let [key, value] of formData) {
-            data[key] = value;
-        }
-
-        fetch('/addAccount', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            const messageElement = document.getElementById('message');
-            
-            if(data.status === 'success'){
-                messageElement.textContent = "Account added successfully";
-                messageElement.style.color = "green";
-                updateAccounts();
-                console.log("Account added successfully");
-            } else {
-                messageElement.textContent = "Error adding account";
-                messageElement.style.color = "red";
-                console.log("Error adding account");
-            }
-            // close the modal
-            document.getElementById('addAccountModal').style.display = "none";
-          })
-          .catch(error => {
-            const messageElement = document.getElementById('message');
-            messageElement.textContent = "Error: " + error;
-            messageElement.style.color = "red";
-            console.log('Error:', error)
-        });
-    });
 
     function updateAccounts() {
         console.log("inFunction");
@@ -519,213 +446,342 @@ function moveToFolder(uid, folderId) {
         });
       }
 
-      function openCompose() {
-        let inbox= document.getElementById('inbox');
-        let main= document.querySelector('main');
-        let editor= document.getElementById('email-reply-container');
-        let replyMenu= document.getElementById('reply-menu');
-        let emailContentContainer= document.getElementById('email-content-container');
-        inbox.classList.remove('closed');
-        inbox.classList.add('open');
-        main.classList.remove('closed');
-        main.classList.add('open');
-        editor.classList.remove('hidden');
-        editor.style.display='block';
-        replyMenu.classList.add('hidden');
-        emailContentContainer.classList.add('hidden');
 
-      }
+/******************************************************************
+ * Open Compose
+ * Use: Adjusts CSS classes to open the compose window
+ * 
+ * ****************************************************************/
+function openCompose() {
+  let inbox= document.getElementById('inbox');
+  let main= document.querySelector('main');
+  let editor= document.getElementById('email-reply-container');
+  let replyMenu= document.getElementById('reply-menu');
+  let emailContentContainer= document.getElementById('email-content-container');
+  inbox.classList.remove('closed');
+  inbox.classList.add('open');
+  main.classList.remove('closed');
+  main.classList.add('open');
+  editor.classList.remove('hidden');
+  editor.style.display='block';
+  replyMenu.classList.add('hidden');
+  emailContentContainer.classList.add('hidden');
 
-      function openReply() {
-        let inbox = document.getElementById('inbox');
-        let main = document.querySelector('main');
-        let editor = document.getElementById('email-reply-container');
-        let replyMenu = document.getElementById('reply-menu');
-        let emailContentContainer = document.getElementById('email-content-container');
-        let fromInput = document.getElementById('fromInput');
-        let toInput = document.getElementById('toInput');
-        let subjectInput = document.getElementById('subject');
-        let editorElement = document.getElementById('editorElementId');
-        
-        // Get the email details from the original email view
-        let originalFrom = document.getElementById('originalFrom').innerText;
-        let originalTo = document.getElementById('originalTo').innerText;
-        let originalSubject = document.getElementById('originalSubject').innerText;
-        let originalContent = document.getElementById('originalContent').innerText;
-      
-        // Populate the fields in the reply form
-        fromInput.value = originalFrom;
-        toInput.value = originalTo;
-        subjectInput.value = `Re: ${originalSubject}`;
-        editorElement.innerHTML = `\n\n\n-------- Original Message --------\nFrom: ${originalFrom}\nTo: ${originalTo}\nSubject: ${originalSubject}\n\n${originalContent}`;
-      
-        inbox.classList.remove('closed');
-        inbox.classList.add('open');
-        main.classList.remove('closed');
-        main.classList.add('open');
-        editor.classList.remove('hidden');
-        editor.style.display = 'block';
-        replyMenu.classList.add('hidden');
-        emailContentContainer.classList.add('hidden');
-      }
-
-      function saveDraft() {
-        
-        const from = document.getElementById('fromInput').name;
-        const accountId = document.getElementById('fromInput').value;
-        const to = document.getElementById('toInput').value;
-        const cc = document.getElementById('cc').value;
-        const bcc = document.getElementById('bcc').value;
-        const subject = document.getElementById('subject').value;
-        const content = editorInstance.getData();
+}
 
 
-        const emailData = {
-          from: from,
-          to: to, 
-          cc: cc,
-          bcc: bcc,
-          subject: subject,
-          content: content,
-          accountId: accountId
-        };
+/******************************************************************
+ * Open Reply
+ * Use: Pulls values from original email, opens the editor, and pre-populates the reply values
+ * 
+ * ****************************************************************/
+function openReply() {
+  let inbox = document.getElementById('inbox');
+  let main = document.querySelector('main');
+  let editor = document.getElementById('email-reply-container');
+  let replyMenu = document.getElementById('reply-menu');
+  let emailContentContainer = document.getElementById('email-content-container');
+  let fromInput = document.getElementById('fromInput');
+  let toInput = document.getElementById('toInput');
+  let subjectInput = document.getElementById('subject');
+  let editorElement = document.getElementById('editorElementId');
+  
+  // Get the email details from the original email view
+  let originalFrom = document.getElementById('originalFrom').innerText;
+  let originalTo = document.getElementById('originalTo').innerText;
+  let originalSubject = document.getElementById('originalSubject').innerText;
+  let originalContent = document.getElementById('originalContent').innerText;
 
-        fetch(`/saveDraft/${accountId}`, {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
-        .then((data) => {console.log(data)});
-        // For example, you can make an AJAX request to a server-side endpoint
-        // to handle the email sending process
-        console.log("Saving draft...", emailData);
-      }
+  // Populate the fields in the reply form
+  fromInput.value = originalFrom;
+  toInput.value = originalTo;
+  subjectInput.value = `Re: ${originalSubject}`;
+  editorElement.innerHTML = `\n\n\n-------- Original Message --------\nFrom: ${originalFrom}\nTo: ${originalTo}\nSubject: ${originalSubject}\n\n${originalContent}`;
 
+  inbox.classList.remove('closed');
+  inbox.classList.add('open');
+  main.classList.remove('closed');
+  main.classList.add('open');
+  editor.classList.remove('hidden');
+  editor.style.display = 'block';
+  replyMenu.classList.add('hidden');
+  emailContentContainer.classList.add('hidden');
+}
 
-      function sendEmail() {
-        // Get the values from the input fields
-        const from = document.getElementById('fromInput').value;
-        const to = document.getElementById('toInput').value;
-        const cc = document.getElementById('cc').value;
-        const bcc = document.getElementById('bcc').value;
-        const subject = document.getElementById('subject').value;
-        const content = editorInstance.getData();
-      
-        // Perform any necessary validations on the input values
-      
-        // Create an object or perform AJAX request to send the email
-        const emailData = {
-          from: from,
-          to: to,
-          cc: cc,
-          bcc: bcc,
-          subject: subject,
-          content: content
-        };
-      
-        // Replace this with your logic to send the email
-        fetch('/sendEmail/', {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
-        .then((data) => {console.log(data)});
-        // For example, you can make an AJAX request to a server-side endpoint
-        // to handle the email sending process
-        console.log("Sending email...", emailData);
-        
-        // Reset the input fields and editor content after sending the email
-        document.getElementById('fromInput').value = '';
-        document.getElementById('toInput').value = '';
-        document.getElementById('cc').value = '';
-        document.getElementById('bcc').value = '';
-        document.getElementById('subject').value = '';
-        document.getElementById('editorElementId').value = '';
-
-       
-        clearEditor();
-        closeCompose();
+/******************************************************************
+ * Save Draft
+ * Use: Pulls the values from the input fields and saves a draft in the database
+ * 
+ * ****************************************************************/
+function saveDraft() {
+  
+  const from = document.getElementById('fromInput').name;
+  const accountId = document.getElementById('fromInput').value;
+  const to = document.getElementById('toInput').value;
+  const cc = document.getElementById('cc').value;
+  const bcc = document.getElementById('bcc').value;
+  const subject = document.getElementById('subject').value;
+  const content = editorInstance.getData();
 
 
-        console.log(ClassicEditor.instances);
-        for (instance in ClassicEditor.instances) {
-          ClassicEditor.instances[instance].updateElement();
-          ClassicEditor.instances[instance].setData('');
-        }
-        
-      }
+  const emailData = {
+    from: from,
+    to: to, 
+    cc: cc,
+    bcc: bcc,
+    subject: subject,
+    content: content,
+    accountId: accountId
+  };
 
-      function loadDraft(accountId, draftId) {
+  fetch(`/saveDraft/${accountId}`, {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
+  .then((data) => {console.log(data)});
+  // For example, you can make an AJAX request to a server-side endpoint
+  // to handle the email sending process
+  console.log("Saving draft...", emailData);
+}
 
-        let url = `/loadDraft/${accountId}/${draftId}`;
-        fetch(url)
-        .then(response => response.json())
-        .then(email => {
-          console.log(email);
-          let fromInput = document.getElementById('fromInput');
-          let toInput = document.getElementById('toInput');
-          let ccInput = document.getElementById('cc');
-          let bccInput = document.getElementById('bcc');
-          let subjectInput = document.getElementById('subject');
-          let editorElement = document.getElementById('editorElementId');
+/******************************************************************
+ * Send Email
+ * Use: Pulls the values from the input fields and sends the email
+ * 
+ * ****************************************************************/
+function sendEmail() {
+  // Get the values from the input fields
+  const from = document.getElementById('fromInput').value;
+  const to = document.getElementById('toInput').value;
+  const cc = document.getElementById('cc').value;
+  const bcc = document.getElementById('bcc').value;
+  const subject = document.getElementById('subject').value;
+  const content = editorInstance.getData();
 
-          fromInput.value = email.from;
-          toInput.value = email.to;
-          ccInput.value = email.cc;
-          bccInput.value = email.bcc;
-          subjectInput.value = email.subject;
-          editorElement.innerHTML = email.content;
-        })
-      }
+  // Perform any necessary validations on the input values
 
-      function clearEditor() {
-        if (editorInstance) {
-            editorInstance.setData('');
-        }
-    }
+  // Create an object or perform AJAX request to send the email
+  const emailData = {
+    from: from,
+    to: to,
+    cc: cc,
+    bcc: bcc,
+    subject: subject,
+    content: content
+  };
 
-      function closeCompose () {
-        let inbox= document.getElementById('inbox');
-        let main= document.querySelector('main');
-        let editor= document.getElementById('email-reply-container');
-        let replyMenu= document.getElementById('reply-menu');
-        let emailContentContainer= document.getElementById('email-content-container');
-        inbox.classList.add('closed');
-        inbox.classList.remove('open');
-        main.classList.add('closed');
-        main.classList.remove('open');
-        editor.classList.add('hidden');
-        editor.style.display='block';
-        replyMenu.classList.remove('hidden');
-        emailContentContainer.classList.remove('hidden');
+  // Replace this with your logic to send the email
+  fetch('/sendEmail/', {method:'POST', headers: {'Content-Type': 'application/json',}, body: JSON.stringify(emailData)})
+  .then((data) => {console.log(data)});
+  // For example, you can make an AJAX request to a server-side endpoint
+  // to handle the email sending process
+  console.log("Sending email...", emailData);
+  
+  // Reset the input fields and editor content after sending the email
+  document.getElementById('fromInput').value = '';
+  document.getElementById('toInput').value = '';
+  document.getElementById('cc').value = '';
+  document.getElementById('bcc').value = '';
+  document.getElementById('subject').value = '';
+  document.getElementById('editorElementId').value = '';
 
-      }
+  
+  clearEditor();
+  closeCompose();
 
-      function saveAndClose () {
-        saveDraft();
-        closeCompose();
-      }
-      
-      document.addEventListener('DOMContentLoaded', (event) => {
-        updateAccounts();
-      
-        getLabelList();
-        
 
-        // CKEditor
-        ClassicEditor
-        .create(document.getElementById('editorElementId'))
-        .then(editor => {
-          editorInstance = editor;
-          console.log("CKEditor initialized");
-        })
-        .catch(error => {
-          console.error(error);
-        });
-      })
-      
-    let replyButton = document.getElementById('replyButton');
-    let replyAllButton = document.getElementById('replyAllButton');
-    let forwardButton = document.getElementById('forwardButton');
-    let emailReplyContainer = document.getElementById('email-reply-container');
+  console.log(ClassicEditor.instances);
+  for (instance in ClassicEditor.instances) {
+    ClassicEditor.instances[instance].updateElement();
+    ClassicEditor.instances[instance].setData('');
+  }
+  
+}
+/******************************************************************
+ * Load Draft
+ * Use: Loads a draft from the database into the editor
+ * 
+ * ****************************************************************/
+function loadDraft(accountId, draftId) {
 
-    function showEditor() {
-      emailReplyContainer.classList.remove('hidden');
-      emailReplyContainer.style.display='block';
-    }
+  let url = `/loadDraft/${accountId}/${draftId}`;
+  fetch(url)
+  .then(response => response.json())
+  .then(email => {
+    console.log(email);
+    let fromInput = document.getElementById('fromInput');
+    let toInput = document.getElementById('toInput');
+    let ccInput = document.getElementById('cc');
+    let bccInput = document.getElementById('bcc');
+    let subjectInput = document.getElementById('subject');
+    let editorElement = document.getElementById('editorElementId');
+
+    fromInput.value = email.from;
+    toInput.value = email.to;
+    ccInput.value = email.cc;
+    bccInput.value = email.bcc;
+    subjectInput.value = email.subject;
+    editorElement.innerHTML = email.content;
+  })
+}
+
+ /******************************************************************
+ * clearEditor
+ * Use: clears the editor
+ * 
+ ******************************************************************/
+
+function clearEditor() {
+  if (editorInstance) {
+      editorInstance.setData('');
+  }
+}
+
+ /******************************************************************
+ * Close Compose
+ * Use: Close the compose window
+ * 
+ ******************************************************************/
+
+function closeCompose () {
+  let inbox= document.getElementById('inbox');
+  let main= document.querySelector('main');
+  let editor= document.getElementById('email-reply-container');
+  let replyMenu= document.getElementById('reply-menu');
+  let emailContentContainer= document.getElementById('email-content-container');
+  inbox.classList.add('closed');
+  inbox.classList.remove('open');
+  main.classList.add('closed');
+  main.classList.remove('open');
+  editor.classList.add('hidden');
+  editor.style.display='block';
+  replyMenu.classList.remove('hidden');
+  emailContentContainer.classList.remove('hidden');
+
+}
+
+
+ /******************************************************************
+ * Save and Close
+ * Use: Saves the draft, clears send inputs, and closes the compose window
+ * 
+ ******************************************************************/
+function saveAndClose () {
+  saveDraft();
+  closeCompose();
+}
+  
+/******************************************************************
+ * Code for Opening and displaying the email editor
+ * 
+ * 
+ ******************************************************************/
+  
+let replyButton = document.getElementById('replyButton');
+let replyAllButton = document.getElementById('replyAllButton');
+let forwardButton = document.getElementById('forwardButton');
+let emailReplyContainer = document.getElementById('email-reply-container');
+
+function showEditor() {
+  emailReplyContainer.classList.remove('hidden');
+  emailReplyContainer.style.display='block';
+}
+
+replyButton.addEventListener('click', showEditor);
+replyAllButton.addEventListener('click', showEditor);
+forwardButton.addEventListener('click', showEditor);
+
+
+/******************************************************************
+ * Popup Modal for adding accounts
+ * 
+ * 
+ ******************************************************************/
+
     
-    replyButton.addEventListener('click', showEditor);
-    replyAllButton.addEventListener('click', showEditor);
-    forwardButton.addEventListener('click', showEditor);
+
+var modal = document.getElementById("addAccountModal");
+var btn = document.getElementById("addAccountButton");
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+var editorInstance = null;  // declare editorInstance at the top of your script
+
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+
+
+const form = document.getElementById('addAccountForm');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        const data = {};
+        for (let [key, value] of formData) {
+            data[key] = value;
+        }
+
+        fetch('/addAccount', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const messageElement = document.getElementById('message');
+            
+            if(data.status === 'success'){
+                messageElement.textContent = "Account added successfully";
+                messageElement.style.color = "green";
+                updateAccounts();
+                console.log("Account added successfully");
+            } else {
+                messageElement.textContent = "Error adding account";
+                messageElement.style.color = "red";
+                console.log("Error adding account");
+            }
+            // close the modal
+            document.getElementById('addAccountModal').style.display = "none";
+          })
+          .catch(error => {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = "Error: " + error;
+            messageElement.style.color = "red";
+            console.log('Error:', error)
+        });
+    });
+/******************************************************************
+ * Run on page load
+ * 
+ * 
+ ******************************************************************/
+    document.addEventListener('DOMContentLoaded', (event) => {
+  updateAccounts();
+
+  getLabelList();
+  
+
+  // CKEditor
+  ClassicEditor
+  .create(document.getElementById('editorElementId'))
+  .then(editor => {
+    editorInstance = editor;
+    console.log("CKEditor initialized");
+  })
+  .catch(error => {
+    console.error(error);
+  });
+})
