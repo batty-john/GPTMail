@@ -1,3 +1,8 @@
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function updateAccounts() {
   console.log("inFunction");
   fetch('/getAccounts')
@@ -42,6 +47,11 @@ function updateAccounts() {
     });
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function setAccount(accountId) {
   console.log("in set account");
   let inboxFolderButton = document.getElementById('inboxFolderButton');
@@ -58,11 +68,12 @@ function setAccount(accountId) {
   getFolderList();
 }
 
-// New function to fetch recent mails and update the inbox
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 async function updateInbox(accountId, folderId = 'inbox') {
-
-
-
 
   let [folderList, emails] = await Promise.all([
     getFolders(accountId),
@@ -166,13 +177,15 @@ async function updateInbox(accountId, folderId = 'inbox') {
 
     });
 
-
-
   }
-
 
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function getEmails(accountId, folderId) {
   var url = `/getFolderEmails/${accountId}/${folderId}`
   return fetch(url)
@@ -182,7 +195,11 @@ function getEmails(accountId, folderId) {
     });
 }
 
-
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function displayEmail(accountId, uid) {
   let mainDiv = document.querySelector('main');
   let inboxDiv = document.getElementById('inbox');
@@ -206,7 +223,11 @@ function displayEmail(accountId, uid) {
       contentDiv.innerHTML = email;
     })
 }
-
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function closeEmail() {
   let mainDiv = document.querySelector('main');
   let inboxDiv = document.getElementById('inbox');
@@ -217,7 +238,11 @@ function closeEmail() {
 }
 
 
-
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 async function deleteSingle(accountId, uid) {
 
 
@@ -238,7 +263,11 @@ async function deleteSingle(accountId, uid) {
 }
 
 
-
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function getLabelList() {
 
   fetch('/getLabels')
@@ -277,10 +306,20 @@ function getLabelList() {
     })
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function getEmailsByLabel(labelID) {
 
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function addLabelpopup() {
 
   const popupContainer = document.getElementById("popupContainer");
@@ -311,6 +350,11 @@ function addLabelpopup() {
 
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function getFolderList(accountId = 0) {
 
   if (accountId === 0) {
@@ -348,6 +392,11 @@ function getFolderList(accountId = 0) {
     })
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function getFolders(accountId) {
   console.log("in getFolders");
   return fetch(`/getFolders/${accountId}`)
@@ -360,12 +409,21 @@ function getFolders(accountId) {
 
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function moveToFolder(uid, folderId) {
   fetch(`/moveToFolder/${uid}/${folderId}`)
     .then(console.log("movefolder"));
 }
 
-
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function addLabel(labelName) {
   // Function to handle label addition
   // Replace with your desired logic
@@ -379,12 +437,22 @@ function addLabel(labelName) {
     });
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function closePopup() {
   // Function to close the popup
   const popupContainer = document.getElementById("popupContainer");
   popupContainer.innerHTML = "";
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function toggleFolderList() {
 
   let list = document.getElementById('addedFoldersList');
@@ -394,6 +462,11 @@ function toggleFolderList() {
   toggle.classList.toggle('fa-angle-down');
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function toggleLabelList() {
 
   let list = document.getElementById('labelsList');
@@ -403,6 +476,11 @@ function toggleLabelList() {
   toggle.classList.toggle('fa-angle-down');
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function addFolderpopup(accountId) {
 
   const popupContainer = document.getElementById("popupContainer");
@@ -433,6 +511,11 @@ function addFolderpopup(accountId) {
 
 }
 
+/******************************************************************
+ * 
+ * Use: 
+ * 
+ * ****************************************************************/
 function addFolder(accountID, folderName) {
   // Function to handle Folder addition
   // Replace with your desired logic
