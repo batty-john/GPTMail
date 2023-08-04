@@ -345,7 +345,25 @@ nav {
 
 }
 
+.folderDropDown {
+    position: absolute;
+    top: 75%;
+    right: 15px;
+    padding: .5em;
+    display: none;
+    background-color: rgb(194, 191, 191);
+    border-radius: 7px;
+}
 
+.folderButton:hover > .folderDropDown, .folderDropDown:hover {
+    display: block;
+    z-index: 1;
+}
+
+.folderDropDownItem {
+    padding: 2px;
+    cursor: pointer;
+}
 
 
 .email-container {
