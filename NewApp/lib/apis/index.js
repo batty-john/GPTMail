@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const {
   now
 } = require('lodash');
+const e = require('express');
 
 module.exports = function (db, session) {
   const app = express();
@@ -135,23 +136,24 @@ module.exports = function (db, session) {
       case 'inbox':
         console.log('Inbox');
 
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id IS NULL', [accountId]);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'received']);
         res.json(emails);
 
         break;
       case 'sent':
         console.log('Sent');
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND email_status = ?', [accountId, 'sent']);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'sent']);
         res.json(emails);
         break;
       case 'drafts':
         console.log('Drafts');
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND email_status = ?', [accountId, 'draft']);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'draft']);
         res.json(emails);
         break;
       case 'trash':
         console.log('Trash');
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND email_status = ?', [accountId, 'trash']);
+        console.log(`Select * from emails where account_id = ${accountId} and status = trash`);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'trash_received']);
         res.json(emails);
         break;
       default:
@@ -184,18 +186,80 @@ module.exports = function (db, session) {
       return res.status(403).send('Not authorized to access this account');
     }
 
-    // Delete the email
-    let [trashFolders] = await db.query('SELECT id FROM folders WHERE account_id = ? AND folder_name = ?', [accountId, 'Trash']);
-    console.log(trashFolders);
-    let trashFolder = trashFolders[0];
-    console.log(trashFolder);
+    // // Delete the email
+    // let [trashFolders] = await db.query('SELECT id FROM folders WHERE account_id = ? AND folder_name = ?', [accountId, 'Trash']);
+    // console.log(trashFolders);
+    // let trashFolder = trashFolders[0];
+    // console.log(trashFolder);
 
-    console.log(`UPDATE emails SET folder_id = ${trashFolder.folderid} WHERE account_id = ${accountId} AND uid = ${uid}`)
-    await db.query('UPDATE emails SET folder_id = ? WHERE account_id = ? AND uid = ?', [trashFolder.folderid, accountId, uid]);
+    let [email] = await db.query('SELECT * FROM emails WHERE account_id = ? AND uid = ?', [accountId, uid]);
+    email = email[0];
+    let emailStatus = email.status;
+    console.log(emailStatus);
+
+    if (emailStatus === 'sent') {
+      emailStatus = 'trash_sent';
+      await db.query('UPDATE emails SET status = ? WHERE account_id = ? AND uid = ?', [emailStatus, accountId, uid]);
+    }
+    else if (emailStatus === 'draft') {
+     // await db.query('DELETE FROM emails WHERE account_id = ? AND uid = ?', [accountId, uid]);
+     await db.query('DELETE FROM emails WHERE account_id = ? AND uid = ?', [accountId, uid]);
+    }
+    else if (emailStatus === 'trash_received') {
+      await db.query('DELETE FROM emails WHERE account_id = ? AND uid = ?', [accountId, uid]);
+    }
+  else if (emailStatus === 'received') {
+      emailStatus = 'trash_received';
+      await db.query('UPDATE emails SET status = ? WHERE account_id = ? AND uid = ?', [emailStatus, accountId, uid]);
+  }
+  else if (emailStatus === 'trash_sent') {
+    await db.query('DELETE FROM emails WHERE account_id = ? AND uid = ?', [accountId, uid]);
+  }
+
+    
 
     res.json(`Deleted email ${req.params.uid}`);
 
   });
+
+   /*********************************************
+   * 
+   * 
+   * *******************************************/
+   app.get('/restoreTrash/:accountId/:uid', async (req, res) => {
+
+
+    const accountId = req.params.accountId;
+    const uid = req.params.uid;
+
+    // Check if the user is logged in and the accountId belongs to them
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).send('Not logged in');
+    }
+
+    const [accounts] = await db.query('SELECT * FROM user_accounts WHERE id = ?', [accountId]);
+    const account = accounts[0]
+    if (account.user_id !== userId) {
+      return res.status(403).send('Not authorized to access this account');
+    }
+
+    let [email] = await db.query('SELECT * FROM emails WHERE account_id = ? AND uid = ?', [accountId, uid]);
+    email = email[0];
+    let emailStatus = email.status;
+
+    if (emailStatus === 'trash_sent') {
+      emailStatus = 'sent';
+      await db.query('UPDATE emails SET status = ? WHERE account_id = ? AND uid = ?', [emailStatus, accountId, uid]);
+    }
+    else if (emailStatus === 'trash_received') {
+      emailStatus = 'received';
+      await db.query('UPDATE emails SET status = ? WHERE account_id = ? AND uid = ?', [emailStatus, accountId, uid]);
+    }
+
+    res.json(`Restored email ${req.params.uid}`);
+
+   });
 
   /*********************************************
    * 
@@ -303,7 +367,7 @@ module.exports = function (db, session) {
   app.post('/sendEmail/', async (req, res) => {
     console.log(req.body);
     res.json(`Sent email`);
-    const query = 'INSERT INTO emails (account_id, sender, recipients, subject, date, cc_recipients, bcc_recipients, folder_id) VALUES (?, SELECT email FROM user_accounts WHERE id = ?, ?, ?, ?, ?, ?, SELECT id FROM folders WHERE folder_name = Sent AND account_id = ?)'
+    const query = 'INSERT INTO emails (account_id, sender, recipients, subject, date, cc_recipients, bcc_recipients, folder_id, status) VALUES (?, SELECT email FROM user_accounts WHERE id = ?, ?, ?, ?, ?, ?, SELECT id FROM folders WHERE folder_name = Sent AND account_id = ?, "sent")';
   });
 
   /*********************************************
@@ -432,7 +496,8 @@ module.exports = function (db, session) {
     console.log(req.body);
     let date = new Date();
     let thread_id = 0;
-    db.query('INSERT INTO emails (account_id, subject, sender, recipients, date, cc_recipients, bcc_recipients, folder_id, thread_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [accountId, req.body.subject, req.body.from, req.body.to, date, req.body.cc_recipients, req.body.bcc_recipients, draftsFolderId, thread_id]);
+    let timeStamp = date.getTime();
+    db.query('INSERT INTO emails (account_id, uid, subject, sender, recipients, date, cc_recipients, bcc_recipients, folder_id, thread_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [accountId, `z` + timeStamp, req.body.subject, req.body.from, req.body.to, date, req.body.cc_recipients, req.body.bcc_recipients, draftsFolderId, thread_id, 'draft']);
     res.send('Draft saved');
 
 

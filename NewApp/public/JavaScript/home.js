@@ -80,7 +80,7 @@ async function updateInbox(accountId, folderId = 'inbox') {
     getEmails(accountId, folderId)
   ]);
 
-  console.log("in update inbox", folderList);
+  console.log("in update inbox", emails);
 
   let inboxEmailsDiv = document.getElementById('inbox-emails');
 
@@ -92,7 +92,33 @@ async function updateInbox(accountId, folderId = 'inbox') {
     inboxEmailsDiv.appendChild(emailDiv);
     emailDiv.classList.add("email-container");
     emailDiv.setAttribute("id", `emailContainer${email.uid}`);
-    let folderDropDown = document.createElement("div");
+    
+
+
+    let popupMenu = document.createElement("div");
+    popupMenu.classList.add("popup-menu");
+    popupMenu.setAttribute("id", `popupMenu${email.uid}`);
+
+    let trashButton = document.createElement("i");
+    trashButton.setAttribute("id", `trashButton${email.uid}`);
+    trashButton.classList.add("far");
+    trashButton.classList.add("fa-trash-can");
+    trashButton.classList.add("btn");
+    popupMenu.appendChild(trashButton);
+
+    if (folderId == "trash") {
+      console.log("in trash");
+      let restoreButton = document.createElement("i");
+      restoreButton.setAttribute("id", `restoreButton${email.uid}`);
+      restoreButton.classList.add("far");
+      restoreButton.classList.add("fa-trash-restore");
+      restoreButton.classList.add("btn");
+      popupMenu.appendChild(restoreButton);
+
+    }
+    else {
+
+      let folderDropDown = document.createElement("div");
     folderDropDown.setAttribute("id", `folderDropDown${email.uid}`);
     folderDropDown.classList.add("folderDropDown");
 
@@ -111,40 +137,31 @@ async function updateInbox(accountId, folderId = 'inbox') {
       folderDropDown.appendChild(folderElement);
     })
 
+      let folderButton = document.createElement("i");
+      folderButton.classList.add("far");
+      folderButton.classList.add("fa-folder");
+      folderButton.classList.add("btn");
+      folderButton.classList.add("folderButton");
 
-    let popupMenu = document.createElement("div");
-    popupMenu.classList.add("popup-menu");
-    popupMenu.setAttribute("id", `popupMenu${email.uid}`);
+      folderButton.appendChild(folderDropDown);
 
-    let trashButton = document.createElement("i");
-    trashButton.setAttribute("id", `trashButton${email.uid}`);
-    trashButton.classList.add("far");
-    trashButton.classList.add("fa-trash-can");
-    trashButton.classList.add("btn");
+      let flagButton = document.createElement("i");
+      flagButton.classList.add("far");
+      flagButton.classList.add("fa-flag");
+      flagButton.classList.add("btn");
+      let circleButton = document.createElement("i");
+      circleButton.classList.add("far");
+      circleButton.classList.add("fa-circle");
+      circleButton.classList.add("btn");
 
-    let folderButton = document.createElement("i");
-    folderButton.classList.add("far");
-    folderButton.classList.add("fa-folder");
-    folderButton.classList.add("btn");
-    folderButton.classList.add("folderButton");
-
-    folderButton.appendChild(folderDropDown);
-
-    let flagButton = document.createElement("i");
-    flagButton.classList.add("far");
-    flagButton.classList.add("fa-flag");
-    flagButton.classList.add("btn");
-    let circleButton = document.createElement("i");
-    circleButton.classList.add("far");
-    circleButton.classList.add("fa-circle");
-    circleButton.classList.add("btn");
+      popupMenu.appendChild(folderButton);
+      popupMenu.appendChild(flagButton);
+      popupMenu.appendChild(circleButton);
+    }
 
 
-
-    popupMenu.appendChild(trashButton);
-    popupMenu.appendChild(folderButton);
-    popupMenu.appendChild(flagButton);
-    popupMenu.appendChild(circleButton);
+    
+    
     emailDiv.appendChild(popupMenu);
 
     emailDiv.addEventListener("click", function (event) {
@@ -153,11 +170,29 @@ async function updateInbox(accountId, folderId = 'inbox') {
       displayEmail(accountId, email.uid)
     });
 
+    let emailDate = new Date(email.date);
+    let displayDate;
+
+    //check if date is today
+    if (emailDate.toDateString() == new Date().toDateString()) {
+      //if so, display hours and minutes
+      displayDate = emailDate.toLocaleString('default', { hour: 'numeric', minute: 'numeric', hour12: true })
+
+    }
+    else if (emailDate.getFullYear() == new Date().getFullYear()) {
+      //if not, but still same year, display day of week, month, and day
+      displayDate = emailDate.toLocaleString('default', { weekday: 'short' }) + " " + emailDate.toLocaleString('default', { month: 'numeric' }) + "/" + emailDate.getDate();
+    }
+    else { //if not, display day/month/year
+      displayDate = emailDate.getDate() + " " + emailDate.getMonth() + " " + emailDate.getFullYear();
+    }
+
+
     emailDiv.innerHTML += `
       
         <div class="sender-line">
           <h3><strong>${email.sender}</strong></h3>
-          <p class="inbox-open-email-time">12:26</p>
+          <p class="inbox-open-email-time">${displayDate}</p>
         </div>
         <div class="subject-line">
           <p>${email.subject}</p>
@@ -177,6 +212,16 @@ async function updateInbox(accountId, folderId = 'inbox') {
 
     });
 
+    if (folderId == "trash") {
+      console.log("in trash - setting up restore button");
+      document.getElementById(`restoreButton${email.uid}`).addEventListener("click", function (event) {
+        event.stopPropagation();
+        restoreSingle(accountId, email.uid);
+  
+      });
+
+    }
+
   }
 
 }
@@ -187,6 +232,7 @@ async function updateInbox(accountId, folderId = 'inbox') {
  * 
  * ****************************************************************/
 function getEmails(accountId, folderId) {
+  console.log("in get emails", accountId, folderId);
   var url = `/getFolderEmails/${accountId}/${folderId}`
   return fetch(url)
     .then(response => response.json())
@@ -262,6 +308,22 @@ async function deleteSingle(accountId, uid) {
 
 }
 
+/******************************************************************
+ * Restore Single
+ * Use: Restores a single email from the trash status to it's original status
+ * 
+ * ****************************************************************/
+async function restoreSingle(accountId, uid) {
+
+  fetch(`restoreTrash/${accountId}/${uid}`)
+    .then(response => response.json())
+    .then(response => {
+      console.log(response);
+    })
+
+  document.getElementById(`emailContainer${uid}`).remove();
+
+}
 
 /******************************************************************
  * 
@@ -382,9 +444,10 @@ function getFolderList(accountId = 0) {
 
         // Store the label ID in a data attribute
         div.dataset.folderId = folder.folder_id;
+        div.dataset.accountId = folder.account_id;
         div.onclick = function () {
           // When the circle is clicked, fetch emails for the associated account
-          getEmailsByLabel(this.dataset.labelID);
+          updateInbox(this.dataset.accountId, this.dataset.folderId);
         };
 
         foldersDiv.appendChild(div);
