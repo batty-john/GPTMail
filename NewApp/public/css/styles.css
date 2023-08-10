@@ -456,11 +456,29 @@ main.closed {
 #email-reply-container {
     display: none;
     height: 100%;
+    border-radius: 7px;
 }
 
 #email-reply-location {
     position: relative;
     height: 100%;
+}
+
+.cke_toolgroup {
+    background-color: #f2f2f2;
+}
+
+/* Example: Style toolbar buttons */
+.cke_button {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+/* Example: Change font color in the editor content */
+.cke_contents {
+    color: #333;
 }
 
 #sendButton {

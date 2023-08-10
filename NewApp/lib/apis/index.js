@@ -138,30 +138,30 @@ module.exports = function (db, session) {
       case 'inbox':
         console.log('Inbox');
 
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'received']);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ? ORDER BY date DESC', [accountId, 'received']);
         res.json(emails);
 
         break;
       case 'sent':
         console.log('Sent');
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'sent']);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ? ORDER BY date DESC', [accountId, 'sent']);
         res.json(emails);
         break;
       case 'drafts':
         console.log('Drafts');
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'draft']);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ? ORDER BY date DESC', [accountId, 'draft']);
         res.json(emails);
         break;
       case 'trash':
         console.log('Trash');
         console.log(`Select * from emails where account_id = ${accountId} and status = trash`);
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ?', [accountId, 'trash_received']);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND status = ? ORDER BY date DESC', [accountId, 'trash_received']);
         res.json(emails);
         break;
       default:
         console.log('Default');
         console.log(`Select * from emails where account_id = ${accountId} and folder_id = ${folderId}`);
-        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id = ?', [accountId, folderId]);
+        [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id = ? ORDER BY date DESC', [accountId, folderId]);
         res.json(emails);
     }
 
@@ -493,14 +493,12 @@ module.exports = function (db, session) {
 
     let accountId = req.params.accountID;
 
-    //get drafts folder id
-    let [folders] = await db.query('SELECT id FROM folders WHERE account_id = ? AND folder_name = ?', [accountId, 'Drafts']);
-    let draftsFolderId = folders[0].folderID;
-    console.log(req.body);
+  
+
     let date = new Date();
     let thread_id = 0;
     let timeStamp = date.getTime();
-    db.query('INSERT INTO emails (account_id, uid, subject, sender, recipients, date, cc_recipients, bcc_recipients, folder_id, thread_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [accountId, `z` + timeStamp, req.body.subject, req.body.from, req.body.to, date, req.body.cc_recipients, req.body.bcc_recipients, draftsFolderId, thread_id, 'draft']);
+    db.query('INSERT INTO emails (account_id, uid, subject, sender, recipients, date, cc_recipients, bcc_recipients, thread_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [accountId, `z` + timeStamp, req.body.subject, req.body.from, req.body.to, date, req.body.cc_recipients, req.body.bcc_recipients, thread_id, 'draft']);
     res.send('Draft saved');
 
 
@@ -588,7 +586,8 @@ module.exports = function (db, session) {
 
     const query = 'INSERT INTO labels (label_name, user_id, color) VALUES (?,?,?)';
     const userId = req.session.userId;
-    const color = "#ffffff";
+    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+    const color = "#" + randomColor;
     const labelName = req.params.label_name;
 
     try {
