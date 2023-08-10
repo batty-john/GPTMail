@@ -110,8 +110,8 @@ async function updateInbox(accountId, folderId = 'inbox') {
       console.log("in trash");
       let restoreButton = document.createElement("i");
       restoreButton.setAttribute("id", `restoreButton${email.uid}`);
-      restoreButton.classList.add("far");
-      restoreButton.classList.add("fa-trash-restore");
+      restoreButton.classList.add("fas");
+      restoreButton.classList.add("fa-trash-arrow-up");
       restoreButton.classList.add("btn");
       popupMenu.appendChild(restoreButton);
 
@@ -149,6 +149,7 @@ async function updateInbox(accountId, folderId = 'inbox') {
       flagButton.classList.add("far");
       flagButton.classList.add("fa-flag");
       flagButton.classList.add("btn");
+
       let circleButton = document.createElement("i");
       circleButton.classList.add("far");
       circleButton.classList.add("fa-circle");
