@@ -116,10 +116,11 @@ module.exports = function (db, session) {
 
 
     const accountId = req.params.accountId;
-    var folderId = req.params.folderId;
 
     // Check if the user is logged in and the accountId belongs to them
     const userId = req.session.userId;
+    const folderId = req.params.folderId;
+
     if (!userId) {
       return res.status(401).send('Not logged in');
     }
@@ -132,6 +133,7 @@ module.exports = function (db, session) {
 
     let emails;
 
+    console.log("Folder Id: ",folderId);
     switch (folderId) {
       case 'inbox':
         console.log('Inbox');
@@ -158,6 +160,7 @@ module.exports = function (db, session) {
         break;
       default:
         console.log('Default');
+        console.log(`Select * from emails where account_id = ${accountId} and folder_id = ${folderId}`);
         [emails] = await db.query('SELECT * FROM emails WHERE account_id = ? AND folder_id = ?', [accountId, folderId]);
         res.json(emails);
     }

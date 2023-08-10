@@ -443,8 +443,9 @@ function getFolderList(accountId = 0) {
         div.textContent = folder.folder_name;
 
         // Store the label ID in a data attribute
-        div.dataset.folderId = folder.folder_id;
+        div.dataset.folderId = folder.id;
         div.dataset.accountId = folder.account_id;
+        console.log(div.dataset.folderId);
         div.onclick = function () {
           // When the circle is clicked, fetch emails for the associated account
           updateInbox(this.dataset.accountId, this.dataset.folderId);
